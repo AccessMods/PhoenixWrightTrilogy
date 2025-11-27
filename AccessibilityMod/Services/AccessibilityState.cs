@@ -65,13 +65,31 @@ namespace AccessibilityMod.Services
             return false;
         }
 
+        public static bool IsInPointingMode()
+        {
+            return PointingNavigator.IsPointingActive();
+        }
+
         public static void AnnounceCurrentState()
         {
             try
             {
                 string stateInfo = "";
 
-                if (IsInInvestigationMode())
+                if (IsInPointingMode())
+                {
+                    stateInfo = "Pointing mode";
+                    int pointCount = PointingNavigator.GetPointCount();
+                    if (pointCount > 0)
+                    {
+                        stateInfo += $". {pointCount} target areas. Use [ and ] to navigate.";
+                    }
+                    else
+                    {
+                        stateInfo += ". Use arrow keys to move cursor.";
+                    }
+                }
+                else if (IsInInvestigationMode())
                 {
                     stateInfo = "Investigation mode";
                     int hotspotCount = HotspotNavigator.GetHotspotCount();

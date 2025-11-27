@@ -54,6 +54,9 @@ namespace AccessibilityMod.Core
         {
             try
             {
+                // Update pointing navigator to detect mode changes
+                PointingNavigator.Update();
+
                 HandleInput();
             }
             catch (Exception ex)
@@ -76,19 +79,40 @@ namespace AccessibilityMod.Core
                 AccessibilityState.AnnounceCurrentState();
             }
 
-            // Investigation mode hotspot navigation
-            if (AccessibilityState.IsInInvestigationMode())
+            // Pointing mode navigation (court maps, etc.)
+            if (AccessibilityState.IsInPointingMode())
             {
-                // [ - Next hotspot
+                // [ - Previous target area
                 if (Input.GetKeyDown(KeyCode.LeftBracket))
                 {
-                    HotspotNavigator.NavigateNext();
+                    PointingNavigator.NavigatePrevious();
                 }
 
-                // ] - Previous hotspot
+                // ] - Next target area
                 if (Input.GetKeyDown(KeyCode.RightBracket))
                 {
+                    PointingNavigator.NavigateNext();
+                }
+
+                // H - List all target areas
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    PointingNavigator.AnnounceAllPoints();
+                }
+            }
+            // Investigation mode hotspot navigation
+            else if (AccessibilityState.IsInInvestigationMode())
+            {
+                // [ - Previous hotspot
+                if (Input.GetKeyDown(KeyCode.LeftBracket))
+                {
                     HotspotNavigator.NavigatePrevious();
+                }
+
+                // ] - Next hotspot
+                if (Input.GetKeyDown(KeyCode.RightBracket))
+                {
+                    HotspotNavigator.NavigateNext();
                 }
 
                 // U - Next unexamined hotspot
@@ -103,9 +127,8 @@ namespace AccessibilityMod.Core
                     HotspotNavigator.AnnounceAllHotspots();
                 }
             }
-
-            // H - Announce life gauge (in trial)
-            if (Input.GetKeyDown(KeyCode.H) && AccessibilityState.IsInTrialMode())
+            // H - Announce life gauge (in trial, but not in pointing mode)
+            else if (Input.GetKeyDown(KeyCode.H) && AccessibilityState.IsInTrialMode())
             {
                 AccessibilityState.AnnounceLifeGauge();
             }
