@@ -13,6 +13,135 @@ namespace AccessibilityMod.Patches
         private static int _lastSlotCursor = -1;
         private static int _lastSaveOptionCursor = -1;
 
+        // Hook messageBoxCtrl.OpenWindow to announce generic message boxes
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(messageBoxCtrl), "OpenWindow")]
+        public static void MessageBox_OpenWindow_Postfix(messageBoxCtrl __instance)
+        {
+            try
+            {
+                string message = GetMessageBoxText(__instance);
+                if (!Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    ClipboardManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in MessageBox OpenWindow patch: {ex.Message}"
+                );
+            }
+        }
+
+        private static string GetMessageBoxText(messageBoxCtrl instance)
+        {
+            try
+            {
+                var textListField = typeof(messageBoxCtrl).GetField(
+                    "text_list_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
+                if (textListField == null)
+                    return null;
+
+                var textList = textListField.GetValue(instance) as Text[];
+                if (textList == null)
+                    return null;
+
+                var parts = new List<string>();
+                foreach (var text in textList)
+                {
+                    if (text != null && !Net35Extensions.IsNullOrWhiteSpace(text.text))
+                    {
+                        parts.Add(text.text);
+                    }
+                }
+
+                return parts.Count > 0 ? string.Join(" ", parts.ToArray()) : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // Hook SavePriorConfirmation.OpenConfirmation to announce pre-save dialogs
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SavePriorConfirmation), "OpenConfirmation")]
+        public static void SavePriorConfirmation_OpenConfirmation_Postfix(
+            SavePriorConfirmation __instance
+        )
+        {
+            try
+            {
+                string message = GetSavePriorConfirmationText(__instance);
+                if (!Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    ClipboardManager.Announce(message, TextType.Menu);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in SavePriorConfirmation patch: {ex.Message}"
+                );
+            }
+        }
+
+        private static string GetSavePriorConfirmationText(SavePriorConfirmation instance)
+        {
+            try
+            {
+                var textField = typeof(SavePriorConfirmation).GetField(
+                    "confirmation_text_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
+                if (textField == null)
+                    return null;
+
+                var textArray = textField.GetValue(instance) as Text[];
+                if (textArray == null)
+                    return null;
+
+                var parts = new List<string>();
+                foreach (var text in textArray)
+                {
+                    if (text != null && !Net35Extensions.IsNullOrWhiteSpace(text.text))
+                    {
+                        parts.Add(text.text);
+                    }
+                }
+
+                return parts.Count > 0 ? string.Join(" ", parts.ToArray()) : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // Hook episodeReleaseCtrl.play to announce episode unlock messages
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(episodeReleaseCtrl), "play")]
+        public static void EpisodeRelease_Play_Postfix()
+        {
+            try
+            {
+                string message = TextDataCtrl.GetText(TextDataCtrl.SaveTextID.ADD_NEW_EPISODE);
+                if (!Net35Extensions.IsNullOrWhiteSpace(message))
+                {
+                    ClipboardManager.Announce(message, TextType.Dialogue);
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in EpisodeRelease play patch: {ex.Message}"
+                );
+            }
+        }
+
         // Hook optionSave cursor changes (Save/Load selection in Options menu)
         [HarmonyPostfix]
         [HarmonyPatch(typeof(optionSave), "ChangeValue")]
