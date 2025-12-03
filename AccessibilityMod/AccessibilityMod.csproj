@@ -36,6 +36,10 @@
       <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Message Text="--- Copying $(AssemblyName).dll to game Mods folder ---" Importance="high" />

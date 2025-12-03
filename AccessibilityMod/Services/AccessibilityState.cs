@@ -45,6 +45,26 @@ namespace AccessibilityMod.Services
             return false;
         }
 
+        public static bool IsIn3DEvidenceMode()
+        {
+            try
+            {
+                // Check if 3D evidence examination is active (GS1 Episode 5+)
+                if (
+                    scienceInvestigationCtrl.instance != null
+                    && scienceInvestigationCtrl.instance.is_play
+                )
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                // Class may not exist in current context
+            }
+            return false;
+        }
+
         public static bool IsInTrialMode()
         {
             try
@@ -76,7 +96,13 @@ namespace AccessibilityMod.Services
             {
                 string stateInfo = "";
 
-                if (IsInPointingMode())
+                if (IsIn3DEvidenceMode())
+                {
+                    // Delegate to Evidence3DNavigator for detailed state
+                    Evidence3DNavigator.AnnounceState();
+                    return;
+                }
+                else if (IsInPointingMode())
                 {
                     stateInfo = "Pointing mode";
                     int pointCount = PointingNavigator.GetPointCount();

@@ -79,8 +79,23 @@ namespace AccessibilityMod.Core
                 AccessibilityState.AnnounceCurrentState();
             }
 
+            // 3D evidence examination mode (GS1 Episode 5+)
+            if (AccessibilityState.IsIn3DEvidenceMode())
+            {
+                // [ - Previous hotspot
+                if (Input.GetKeyDown(KeyCode.LeftBracket))
+                {
+                    Evidence3DNavigator.NavigatePrevious();
+                }
+
+                // ] - Next hotspot
+                if (Input.GetKeyDown(KeyCode.RightBracket))
+                {
+                    Evidence3DNavigator.NavigateNext();
+                }
+            }
             // Pointing mode navigation (court maps, etc.)
-            if (AccessibilityState.IsInPointingMode())
+            else if (AccessibilityState.IsInPointingMode())
             {
                 // [ - Previous target area
                 if (Input.GetKeyDown(KeyCode.LeftBracket))
