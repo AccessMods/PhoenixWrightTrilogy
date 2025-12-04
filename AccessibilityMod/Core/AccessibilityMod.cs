@@ -55,6 +55,7 @@ namespace AccessibilityMod.Core
                 PointingNavigator.Update();
                 LuminolNavigator.Update();
                 VasePuzzleNavigator.Update();
+                FingerprintNavigator.Update();
 
                 HandleInput();
             }
@@ -111,6 +112,26 @@ namespace AccessibilityMod.Core
                 if (Input.GetKeyDown(KeyCode.H))
                 {
                     VasePuzzleNavigator.AnnounceHint();
+                }
+            }
+            // Fingerprint mode (GS1 Episode 5)
+            else if (AccessibilityState.IsInFingerprintMode())
+            {
+                // [ and ] - Navigate fingerprint locations during selection phase
+                if (Input.GetKeyDown(KeyCode.LeftBracket))
+                {
+                    FingerprintNavigator.NavigatePrevious();
+                }
+
+                if (Input.GetKeyDown(KeyCode.RightBracket))
+                {
+                    FingerprintNavigator.NavigateNext();
+                }
+
+                // H - Get hint for current phase
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    FingerprintNavigator.AnnounceHint();
                 }
             }
             // Pointing mode navigation (court maps, etc.)

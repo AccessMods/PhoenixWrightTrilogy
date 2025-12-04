@@ -100,6 +100,11 @@ namespace AccessibilityMod.Services
             return VasePuzzleNavigator.IsVasePuzzleActive();
         }
 
+        public static bool IsInFingerprintMode()
+        {
+            return FingerprintNavigator.IsFingerprintActive();
+        }
+
         public static void AnnounceCurrentState()
         {
             try
@@ -122,6 +127,12 @@ namespace AccessibilityMod.Services
                 {
                     // Delegate to VasePuzzleNavigator for detailed state
                     VasePuzzleNavigator.AnnounceCurrentState();
+                    return;
+                }
+                else if (IsInFingerprintMode())
+                {
+                    // Delegate to FingerprintNavigator for detailed state
+                    FingerprintNavigator.AnnounceState();
                     return;
                 }
                 else if (IsInPointingMode())
