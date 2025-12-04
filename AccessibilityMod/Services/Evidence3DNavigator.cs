@@ -23,8 +23,9 @@ namespace AccessibilityMod.Services
         private class HotspotInfo
         {
             public int Index;
-            public Vector3 WorldPosition;
+            public MeshCollider Collider; // Reference to actual collider for fresh position data
             public string Name;
+            public string ColliderName; // For debugging
         }
 
         #region Initialization
@@ -146,27 +147,40 @@ namespace AccessibilityMod.Services
 
                 foreach (var collider in colliders)
                 {
+                    string colliderName = collider.gameObject.name;
+
                     // Skip "nuki" meshes (these are exclusion zones)
-                    if (nukiRegex.IsMatch(collider.gameObject.name))
+                    if (nukiRegex.IsMatch(colliderName))
+                    {
+#if DEBUG
+                        AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                            $"[3DNav] Skipping nuki mesh: {colliderName}"
+                        );
+#endif
                         continue;
+                    }
 
                     // Try to extract hotspot number from name
-                    Match match = numberRegex.Match(collider.gameObject.name);
+                    Match match = numberRegex.Match(colliderName);
                     int index = 0;
                     if (match.Success)
                     {
                         index = int.Parse(match.Groups[1].Value) - 1; // Convert to 0-based
                     }
 
-                    // Get center of the mesh bounds
-                    Vector3 center = collider.bounds.center;
+#if DEBUG
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        $"[3DNav] Found collider '{colliderName}': index={index}"
+                    );
+#endif
 
                     _hotspots.Add(
                         new HotspotInfo
                         {
                             Index = index,
-                            WorldPosition = center,
+                            Collider = collider,
                             Name = $"Hotspot {_hotspots.Count + 1}",
+                            ColliderName = colliderName,
                         }
                     );
                 }
@@ -180,9 +194,11 @@ namespace AccessibilityMod.Services
                     _hotspots[i].Name = $"Hotspot {i + 1}";
                 }
 
+#if DEBUG
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
                     $"[3DEvidence] Found {_hotspots.Count} hotspots"
                 );
+#endif
             }
             catch (Exception ex)
             {
@@ -234,6 +250,7 @@ namespace AccessibilityMod.Services
 
         /// <summary>
         /// Move cursor to the current hotspot and announce it.
+        /// Rotates the evidence so the hotspot faces the camera for reliable selection.
         /// </summary>
         private static void NavigateToCurrentHotspot()
         {
@@ -244,41 +261,246 @@ namespace AccessibilityMod.Services
 
             try
             {
-                // Get the camera used for 3D evidence
-                Camera camera = scienceInvestigationCtrl.instance.science_camera;
-                if (camera == null)
+                var ctrl = scienceInvestigationCtrl.instance;
+                var manager = ctrl.evidence_manager;
+                if (manager == null)
+                {
+#if DEBUG
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        "[3DNav] ERROR: manager is null"
+                    );
+#endif
                     return;
+                }
 
-                // Convert world position to screen position
-                Vector3 screenPos = camera.WorldToScreenPoint(hotspot.WorldPosition);
+                if (hotspot.Collider == null)
+                {
+#if DEBUG
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        "[3DNav] ERROR: collider is null"
+                    );
+#endif
+                    return;
+                }
 
-                // Get the cursor sprite via reflection
-                var cursorField = typeof(scienceInvestigationCtrl).GetField(
-                    "cursor_",
+#if DEBUG
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                    $"[3DNav] Navigating to hotspot {_currentHotspotIndex}: '{hotspot.ColliderName}'"
+                );
+#endif
+
+                // Get operete_trans_ which is the actual transform that SetRotate modifies
+                var opereteField = typeof(evidenceObjectManager).GetField(
+                    "operete_trans_",
                     System.Reflection.BindingFlags.NonPublic
                         | System.Reflection.BindingFlags.Instance
                 );
 
-                if (cursorField != null)
+                Transform opereteTrans = null;
+                if (opereteField != null)
                 {
-                    var cursor =
-                        cursorField.GetValue(scienceInvestigationCtrl.instance)
-                        as AssetBundleSprite;
-                    if (cursor != null)
-                    {
-                        // Convert screen position back to world position for cursor
-                        Vector3 cursorWorldPos = camera.ScreenToWorldPoint(
-                            new Vector3(screenPos.x, screenPos.y, cursor.transform.position.z)
-                        );
+                    opereteTrans = opereteField.GetValue(manager) as Transform;
+                }
 
-                        // Update cursor position
-                        cursor.transform.position = new Vector3(
-                            cursorWorldPos.x,
-                            cursorWorldPos.y,
-                            cursor.transform.position.z
-                        );
+                if (opereteTrans == null)
+                {
+#if DEBUG
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        "[3DNav] WARNING: couldn't get operete_trans_, using gameObject.transform"
+                    );
+#endif
+                    opereteTrans = manager.gameObject.transform;
+                }
+
+                // First, reset rotation to identity so we can calculate from a known state
+                manager.SetRotate(0, 0);
+
+                // Get the collider's position relative to the operete transform (in its local space at identity rotation)
+                Vector3 colliderWorldPos = hotspot.Collider.bounds.center;
+                Vector3 localPos = opereteTrans.InverseTransformPoint(colliderWorldPos);
+
+#if DEBUG
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                    $"[3DNav] Collider world pos (at identity): ({colliderWorldPos.x:F3}, {colliderWorldPos.y:F3}, {colliderWorldPos.z:F3})"
+                );
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                    $"[3DNav] Local pos relative to operete_trans: ({localPos.x:F3}, {localPos.y:F3}, {localPos.z:F3})"
+                );
+#endif
+
+                // Search for a rotation that makes the hotspot visible and hittable
+                // Try the calculated ideal rotation first, then search nearby angles
+                Camera camera = ctrl.science_camera;
+
+                float bestH = 0,
+                    bestV = 0;
+                Vector2 bestScreenPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                bool foundRotation = false;
+
+                // Calculate initial rotation estimate
+                float idealH = Mathf.Atan2(localPos.x, localPos.z) * Mathf.Rad2Deg;
+                float distXZ = Mathf.Sqrt(localPos.x * localPos.x + localPos.z * localPos.z);
+                float idealV = Mathf.Atan2(-localPos.y, distXZ) * Mathf.Rad2Deg;
+
+                // Clamp vertical to reasonable range (extreme angles often don't work)
+                idealV = Mathf.Clamp(idealV, -60f, 60f);
+
+#if DEBUG
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                    $"[3DNav] Ideal rotation: H={idealH:F1}, V={idealV:F1}"
+                );
+#endif
+
+                // Search pattern: try ideal first, then offsets
+                float[] hOffsets = { 0, -15, 15, -30, 30, -45, 45, -60, 60, 180, 165, -165 };
+                float[] vOffsets = { 0, -15, 15, -30, 30, -45, 45 };
+
+                foreach (float vOff in vOffsets)
+                {
+                    if (foundRotation)
+                        break;
+
+                    foreach (float hOff in hOffsets)
+                    {
+                        if (foundRotation)
+                            break;
+
+                        float testH = idealH + hOff;
+                        float testV = Mathf.Clamp(idealV + vOff, -75f, 75f);
+
+                        manager.SetRotate(testH, testV);
+
+                        // Raycast from screen center to see if we hit our target
+                        if (camera != null)
+                        {
+                            Ray ray = camera.ScreenPointToRay(
+                                new Vector3(Screen.width / 2f, Screen.height / 2f, 0)
+                            );
+                            RaycastHit hit;
+                            if (Physics.Raycast(ray, out hit, 100f))
+                            {
+                                if (hit.collider == hotspot.Collider)
+                                {
+                                    bestH = testH;
+                                    bestV = testV;
+                                    bestScreenPos = new Vector2(
+                                        Screen.width / 2f,
+                                        Screen.height / 2f
+                                    );
+                                    foundRotation = true;
+#if DEBUG
+                                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                                        $"[3DNav] Found rotation at H={testH:F1}, V={testV:F1} (offset H={hOff}, V={vOff})"
+                                    );
+#endif
+                                }
+                            }
+                        }
                     }
                 }
+
+                // If center didn't work, try a wider screen search at the ideal rotation
+                if (!foundRotation && camera != null)
+                {
+                    manager.SetRotate(idealH, idealV);
+
+                    // Search in a grid pattern
+                    for (int sy = -2; sy <= 2 && !foundRotation; sy++)
+                    {
+                        for (int sx = -2; sx <= 2 && !foundRotation; sx++)
+                        {
+                            float screenX = Screen.width / 2f + sx * 100;
+                            float screenY = Screen.height / 2f + sy * 100;
+
+                            Ray ray = camera.ScreenPointToRay(new Vector3(screenX, screenY, 0));
+                            RaycastHit hit;
+                            if (Physics.Raycast(ray, out hit, 100f))
+                            {
+                                if (hit.collider == hotspot.Collider)
+                                {
+                                    bestH = idealH;
+                                    bestV = idealV;
+                                    bestScreenPos = new Vector2(screenX, screenY);
+                                    foundRotation = true;
+#if DEBUG
+                                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                                        $"[3DNav] Found at ideal rotation, screen offset ({sx * 100}, {sy * 100})"
+                                    );
+#endif
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!foundRotation)
+                {
+                    // Last resort: use calculated rotation and bounds center
+                    bestH = idealH;
+                    bestV = idealV;
+                    manager.SetRotate(bestH, bestV);
+
+                    Vector3 boundsCenter = hotspot.Collider.bounds.center;
+                    if (camera != null)
+                    {
+                        Vector3 screenPos3D = camera.WorldToScreenPoint(boundsCenter);
+                        bestScreenPos = new Vector2(screenPos3D.x, screenPos3D.y);
+                    }
+
+#if DEBUG
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        $"[3DNav] No hit found, using ideal rotation H={bestH:F1}, V={bestV:F1}, bounds center"
+                    );
+#endif
+                }
+
+                // Apply the best rotation we found
+                manager.SetRotate(bestH, bestV);
+
+                // Move cursor to the position we found during rotation search
+                if (camera != null)
+                {
+                    var cursorField = typeof(scienceInvestigationCtrl).GetField(
+                        "cursor_",
+                        System.Reflection.BindingFlags.NonPublic
+                            | System.Reflection.BindingFlags.Instance
+                    );
+
+                    if (cursorField != null)
+                    {
+                        var cursor = cursorField.GetValue(ctrl) as AssetBundleSprite;
+                        if (cursor != null)
+                        {
+                            Vector3 cursorWorldPos = camera.ScreenToWorldPoint(
+                                new Vector3(
+                                    bestScreenPos.x,
+                                    bestScreenPos.y,
+                                    cursor.transform.position.z
+                                )
+                            );
+
+                            cursor.transform.position = new Vector3(
+                                cursorWorldPos.x,
+                                cursorWorldPos.y,
+                                cursor.transform.position.z
+                            );
+
+#if DEBUG
+                            AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                                $"[3DNav] Cursor moved to screen: ({bestScreenPos.x:F1}, {bestScreenPos.y:F1})"
+                            );
+#endif
+                        }
+                    }
+                }
+
+#if DEBUG
+                // Check current hit state
+                int hitIndex = ctrl.hit_point_index;
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                    $"[3DNav] hit_point_index (immediate): {hitIndex}"
+                );
+#endif
 
                 // Announce the hotspot
                 string message = $"{hotspot.Name} of {_hotspots.Count}";
@@ -287,9 +509,9 @@ namespace AccessibilityMod.Services
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
-                    $"Error navigating to hotspot: {ex.Message}"
+                    $"Error navigating to hotspot: {ex.Message}\n{ex.StackTrace}"
                 );
-                // Still announce even if cursor move failed
+                // Still announce even if navigation failed
                 ClipboardManager.Announce(hotspot.Name, TextType.Menu);
             }
         }
