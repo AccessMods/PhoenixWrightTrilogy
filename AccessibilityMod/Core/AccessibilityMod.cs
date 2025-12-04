@@ -54,6 +54,7 @@ namespace AccessibilityMod.Core
                 // Update navigators to detect mode changes
                 PointingNavigator.Update();
                 LuminolNavigator.Update();
+                VasePuzzleNavigator.Update();
 
                 HandleInput();
             }
@@ -65,8 +66,8 @@ namespace AccessibilityMod.Core
 
         private void HandleInput()
         {
-            // R - Repeat last output
-            if (Input.GetKeyDown(KeyCode.R))
+            // R - Repeat last output (disabled in vase puzzle mode since R is rotate)
+            if (Input.GetKeyDown(KeyCode.R) && !AccessibilityState.IsInVasePuzzleMode())
             {
                 ClipboardManager.RepeatLast();
             }
@@ -101,6 +102,15 @@ namespace AccessibilityMod.Core
                 if (Input.GetKeyDown(KeyCode.RightBracket))
                 {
                     LuminolNavigator.NavigateNext();
+                }
+            }
+            // Vase puzzle mode (GS1 Episode 5)
+            else if (AccessibilityState.IsInVasePuzzleMode())
+            {
+                // H - Get hint for current step
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    VasePuzzleNavigator.AnnounceHint();
                 }
             }
             // Pointing mode navigation (court maps, etc.)

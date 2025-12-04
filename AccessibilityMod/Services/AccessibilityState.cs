@@ -95,6 +95,11 @@ namespace AccessibilityMod.Services
             return LuminolNavigator.IsLuminolActive();
         }
 
+        public static bool IsInVasePuzzleMode()
+        {
+            return VasePuzzleNavigator.IsVasePuzzleActive();
+        }
+
         public static void AnnounceCurrentState()
         {
             try
@@ -111,6 +116,12 @@ namespace AccessibilityMod.Services
                 {
                     // Delegate to LuminolNavigator for detailed state
                     LuminolNavigator.AnnounceState();
+                    return;
+                }
+                else if (IsInVasePuzzleMode())
+                {
+                    // Delegate to VasePuzzleNavigator for detailed state
+                    VasePuzzleNavigator.AnnounceCurrentState();
                     return;
                 }
                 else if (IsInPointingMode())
