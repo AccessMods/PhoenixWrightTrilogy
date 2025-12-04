@@ -174,6 +174,11 @@ namespace AccessibilityMod.Patches
                 if (message_work.op_no == 3 || message_work.op_no == 4)
                     return;
 
+                // Skip if there's an active speaker - DialoguePatches will handle it
+                // This prevents duplicate output for auto-advancing dialogue that has a speaker
+                if (message_work.speaker_id > 0)
+                    return;
+
                 // Capture current text from messageBoardCtrl before it's cleared
                 CaptureMessageBoardText();
             }

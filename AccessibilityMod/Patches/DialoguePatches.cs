@@ -172,6 +172,32 @@ namespace AccessibilityMod.Patches
         #region Message Board Hooks
 
         /// <summary>
+        /// Hook BEFORE message board closes to capture any pending dialogue.
+        /// This catches cases where the board closes (e.g., court record opens)
+        /// before ClearText is called.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(messageBoardCtrl), "board")]
+        public static void Board_Prefix(messageBoardCtrl __instance, bool in_board, bool in_mes)
+        {
+            try
+            {
+                // Only capture when board is about to close and is currently active
+                if (!in_board && __instance.body_active)
+                {
+                    // Capture any text before the board closes
+                    TryOutputDialogue();
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in Board prefix patch: {ex.Message}"
+                );
+            }
+        }
+
+        /// <summary>
         /// Hook when message board opens/closes. Reset tracking when closed.
         /// </summary>
         [HarmonyPostfix]
@@ -249,6 +275,82 @@ namespace AccessibilityMod.Patches
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error in LoadMsgSet patch: {ex.Message}"
+                );
+            }
+        }
+
+        #endregion
+
+        #region MessageSystem Hooks
+
+        /// <summary>
+        /// Hook ClearText to capture dialogue before it's cleared.
+        /// This serves as a safety net for auto-advancing dialogue where other hooks
+        /// might miss the text. ClearText is always called before displaying the next
+        /// message, making it a reliable last-chance capture point.
+        ///
+        /// Auto-advancing can happen via:
+        /// - code 7: Script-specified auto-advance
+        /// - RT_GO status: After certain events complete
+        /// - NEXT_MESSAGE status: Programmatic advancement
+        ///
+        /// The duplicate detection in TryOutputDialogue prevents double announcements
+        /// if other hooks already captured the text.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MessageSystem), "ClearText")]
+        public static void ClearText_Prefix(MessageWork message_work)
+        {
+            try
+            {
+                // Only capture if message board is active and has text
+                var ctrl = messageBoardCtrl.instance;
+                if (ctrl == null || !ctrl.body_active)
+                    return;
+
+                // Always try to capture - duplicate detection will prevent double announcements
+                // This ensures we catch auto-advancing dialogue that other hooks might miss
+                TryOutputDialogue();
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in ClearText patch: {ex.Message}"
+                );
+            }
+        }
+
+        #endregion
+
+        #region SubWindow Hooks
+
+        /// <summary>
+        /// Hook SubWindow.SetReq to capture dialogue when court record opens for evidence presentation.
+        /// During cross-examination, when the game wants you to present evidence, it calls
+        /// SetReq(SELECT) which opens the court record as an overlay. The message board stays
+        /// active but our other hooks don't fire because no text clearing or board closing happens.
+        /// </summary>
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(SubWindow), "SetReq")]
+        public static void SetReq_Prefix(SubWindow __instance, SubWindow.Req req)
+        {
+            try
+            {
+                // Capture dialogue when court record opens for evidence presentation
+                // SELECT = present evidence, STATUS = view court record
+                if (req == SubWindow.Req.SELECT || req == SubWindow.Req.STATUS)
+                {
+                    var ctrl = messageBoardCtrl.instance;
+                    if (ctrl != null && ctrl.body_active)
+                    {
+                        TryOutputDialogue();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in SetReq patch: {ex.Message}"
                 );
             }
         }
