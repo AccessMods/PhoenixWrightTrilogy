@@ -325,10 +325,11 @@ namespace AccessibilityMod.Patches
         #region SubWindow Hooks
 
         /// <summary>
-        /// Hook SubWindow.SetReq to capture dialogue when court record opens for evidence presentation.
-        /// During cross-examination, when the game wants you to present evidence, it calls
-        /// SetReq(SELECT) which opens the court record as an overlay. The message board stays
-        /// active but our other hooks don't fire because no text clearing or board closing happens.
+        /// Hook SubWindow.SetReq to capture dialogue when any window opens as an overlay.
+        /// Many game modes (evidence presentation, profiles, minigames) open via SetReq
+        /// without closing the message board or clearing text. This universal hook captures
+        /// dialogue before any non-EXIT request opens a window.
+        /// Duplicate detection prevents double announcements if other hooks already captured.
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(SubWindow), "SetReq")]
@@ -336,15 +337,22 @@ namespace AccessibilityMod.Patches
         {
             try
             {
-                // Capture dialogue when court record opens for evidence presentation
-                // SELECT = present evidence, STATUS = view court record
-                if (req == SubWindow.Req.SELECT || req == SubWindow.Req.STATUS)
+                // Skip EXIT requests - those close windows, not open them
+                // Also skip NONE and IDLE which don't change anything
+                if (
+                    req == SubWindow.Req.NONE
+                    || req == SubWindow.Req.IDLE
+                    || req.ToString().Contains("EXIT")
+                )
                 {
-                    var ctrl = messageBoardCtrl.instance;
-                    if (ctrl != null && ctrl.body_active)
-                    {
-                        TryOutputDialogue();
-                    }
+                    return;
+                }
+
+                // Capture dialogue before any window opens
+                var ctrl = messageBoardCtrl.instance;
+                if (ctrl != null && ctrl.body_active)
+                {
+                    TryOutputDialogue();
                 }
             }
             catch (Exception ex)
