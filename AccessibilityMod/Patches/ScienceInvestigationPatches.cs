@@ -40,7 +40,7 @@ namespace AccessibilityMod.Patches
                 int hotspotCount = Evidence3DNavigator.GetHotspotCount();
 
                 string message =
-                    $"3D examination: {evidenceName}. {hotspotCount} hotspots. Use [ and ] to navigate hotspots. X to zoom in, Y to zoom out. Press I for state info.";
+                    $"3D examination: {evidenceName}. {hotspotCount} hotspots. Use [ and ] to navigate hotspots. J to zoom in, E to zoom out.";
 
                 ClipboardManager.Announce(message, TextType.Menu);
 

@@ -110,6 +110,11 @@ namespace AccessibilityMod.Services
             return VideoTapeNavigator.IsVideoTapeActive();
         }
 
+        public static bool IsInVaseShowMode()
+        {
+            return VaseShowNavigator.IsActive();
+        }
+
         public static void AnnounceCurrentState()
         {
             try
@@ -144,6 +149,12 @@ namespace AccessibilityMod.Services
                 {
                     // Delegate to VideoTapeNavigator for detailed state
                     VideoTapeNavigator.AnnounceState();
+                    return;
+                }
+                else if (IsInVaseShowMode())
+                {
+                    // Delegate to VaseShowNavigator for detailed state
+                    VaseShowNavigator.AnnounceState();
                     return;
                 }
                 else if (IsInPointingMode())

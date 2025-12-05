@@ -57,6 +57,7 @@ namespace AccessibilityMod.Core
                 VasePuzzleNavigator.Update();
                 FingerprintNavigator.Update();
                 VideoTapeNavigator.Update();
+                VaseShowNavigator.Update();
 
                 HandleInput();
             }
@@ -68,8 +69,12 @@ namespace AccessibilityMod.Core
 
         private void HandleInput()
         {
-            // R - Repeat last output (disabled in vase puzzle mode since R is rotate)
-            if (Input.GetKeyDown(KeyCode.R) && !AccessibilityState.IsInVasePuzzleMode())
+            // R - Repeat last output (disabled in vase puzzle and vase show modes since R is rotate)
+            if (
+                Input.GetKeyDown(KeyCode.R)
+                && !AccessibilityState.IsInVasePuzzleMode()
+                && !AccessibilityState.IsInVaseShowMode()
+            )
             {
                 ClipboardManager.RepeatLast();
             }
@@ -153,6 +158,15 @@ namespace AccessibilityMod.Core
                 if (Input.GetKeyDown(KeyCode.H))
                 {
                     VideoTapeNavigator.AnnounceHint();
+                }
+            }
+            // Vase show rotation mode (GS1 Episode 5 - unstable jar)
+            else if (AccessibilityState.IsInVaseShowMode())
+            {
+                // G - Get hint for rotation (H is used for X-axis rotation in this puzzle)
+                if (Input.GetKeyDown(KeyCode.G))
+                {
+                    VaseShowNavigator.AnnounceHint();
                 }
             }
             // Pointing mode navigation (court maps, etc.)
