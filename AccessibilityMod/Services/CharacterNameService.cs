@@ -54,6 +54,7 @@ namespace AccessibilityMod.Services
             { 45, "Lana Skye" },
             { 46, "Jake Marshall" },
             { 47, "Mike Meekins" },
+            { 48, "Bruce Goodman" },
             { 49, "Damon Gant" },
             { 50, "Angel Starr" },
             { 52, "Police Officer" },
