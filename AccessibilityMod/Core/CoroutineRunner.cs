@@ -380,6 +380,43 @@ namespace AccessibilityMod.Core
         }
 
         /// <summary>
+        /// Starts the verdict announcement sequence timed to match the sound effects.
+        /// </summary>
+        public void StartVerdictAnnouncement(bool isNotGuilty)
+        {
+            StartCoroutine(VerdictAnnouncementCoroutine(isNotGuilty));
+        }
+
+        private IEnumerator VerdictAnnouncementCoroutine(bool isNotGuilty)
+        {
+            if (isNotGuilty)
+            {
+                // Match the two sound effect hits from judgmentCtrl.CoroutineUSA
+                // First sound at frame 20 (~0.33s), second at frame 90 (~1.5s)
+                yield return new WaitForSeconds(0.33f);
+                ClipboardManager.Announce("Not", TextType.Trial);
+
+                yield return new WaitForSeconds(1.17f); // 1.5s - 0.33s
+                ClipboardManager.Announce("Guilty", TextType.Trial);
+            }
+            else
+            {
+                // Spell out G-U-I-L-T-Y matching 6 sound effects at 10-frame intervals
+                string[] letters = { "G", "U", "I", "L", "T", "Y" };
+                yield return new WaitForSeconds(0.17f); // First sound at frame 10
+
+                for (int i = 0; i < letters.Length; i++)
+                {
+                    ClipboardManager.Announce(letters[i], TextType.Trial);
+                    if (i < letters.Length - 1)
+                    {
+                        yield return new WaitForSeconds(0.17f); // 10 frames between
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Schedules a delayed announcement. If called again before the delay expires,
         /// the previous announcement is cancelled.
         /// </summary>
