@@ -67,7 +67,7 @@ namespace AccessibilityMod.Services
             { 3, "Phoenix Wright" },
             { 4, "Maya Fey" },
             { 5, "Miles Edgeworth" },
-            { 6, "Larry Butz" },
+            { 6, "Mia Fey" },
             { 7, "Judge" },
             { 9, "Winston Payne" },
             { 10, "Dick Gumshoe" },

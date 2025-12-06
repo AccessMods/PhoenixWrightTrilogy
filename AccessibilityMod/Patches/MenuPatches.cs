@@ -838,6 +838,12 @@ namespace AccessibilityMod.Patches
             if (hasPsyLock)
             {
                 // Topic has a psyche-lock (secret that needs to be unlocked)
+                int lockCount = PsycheLockPatches.GetCurrentLockCount();
+                if (lockCount > 0)
+                {
+                    string lockWord = lockCount == 1 ? "lock" : "locks";
+                    return $"{optionText} ({lockCount} {lockWord})";
+                }
                 return $"{optionText} (locked)";
             }
             else if (isRead)
