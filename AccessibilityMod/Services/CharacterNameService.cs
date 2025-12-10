@@ -96,6 +96,7 @@ namespace AccessibilityMod.Services
             { 34, "Money the Monkey" },
             { 35, "Matt Engarde" },
             { 36, "Adrian Andrews" },
+            { 37, "Shelly de Killer" },
             { 39, "Wendy Oldbag" },
             { 40, "Will Powers" },
             { 46, "Russell Berry" },
