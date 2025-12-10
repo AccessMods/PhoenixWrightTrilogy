@@ -101,6 +101,7 @@ namespace AccessibilityMod.Services
             { 46, "Russell Berry" },
             { 47, "Bellboy" },
             { 48, "PA Notice" },
+            { 50, "Chief" },
             { 52, "Guard" },
             { 53, "Shoe" },
             { 54, "John Doe" },
