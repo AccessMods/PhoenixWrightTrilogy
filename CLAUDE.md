@@ -114,7 +114,35 @@ When adding new patches, verify method names exist in `./Decompiled/` first. The
 - Private methods can be patched but require correct signatures
 
 ### Character Name Mapping
-Speaker sprite IDs differ per game. GS3 uses `name_id_tbl` remapping. When names are wrong, check which game is active via `GSStatic.global_work_.title`. Unknown IDs are logged automatically.
+
+Speaker IDs differ per game and come from two sources that must be handled differently:
+
+**Two Speaker ID Sources:**
+1. `GSStatic.message_work_.speaker_id` - Raw speaker ID from the message system
+2. `_lastSpeakerId` in DialoguePatches - Captured from `name_plate()` callback's `in_name_no` parameter
+
+**GS1/GS2 Behavior:**
+- Both sources typically contain the same raw speaker ID
+- `CharacterNameService` dictionaries (`GS1_NAMES`, `GS2_NAMES`) are keyed by these raw IDs
+- **Problem**: `message_work_.speaker_id` can become stale during certain game modes (e.g., 3D evidence examination in GS1 Episode 5). When examining a hotspot, dialogue plays but `speaker_id` still holds the value from before entering 3D mode.
+- **Solution**: Prefer `_lastSpeakerId` from `name_plate()` calls, fall back to `message_work_.speaker_id`
+
+**GS3 Behavior:**
+- GS3 uses `name_id_tbl` (in `messageBoardCtrl`) to remap raw speaker IDs to sprite indices for display
+- The `name_plate()` method receives the raw ID, then remaps it internally for the sprite
+- `GS3_NAMES` dictionary is keyed by raw `message_work_.speaker_id` values, NOT the remapped sprite indices
+- The ID passed to `name_plate()` may differ from `message_work_.speaker_id` in some scenarios
+- **Solution**: Always use `message_work_.speaker_id` for GS3
+
+**Implementation** (in `DialoguePatches.TryOutputDialogue()`):
+```csharp
+if (isGS3)
+    speakerId = message_work_.speaker_id & 0x7F;  // GS3: use message_work
+else
+    speakerId = _lastSpeakerId > 0 ? _lastSpeakerId : (message_work_.speaker_id & 0x7F);  // GS1/GS2: prefer name_plate
+```
+
+When names are wrong, check which game is active via `GSStatic.global_work_.title`. Unknown IDs are logged automatically.
 
 ### .NET 3.5 Limitations
 - No `string.IsNullOrWhiteSpace` - use `Net35Extensions.IsNullOrWhiteSpace`

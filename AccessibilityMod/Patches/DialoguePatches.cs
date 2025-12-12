@@ -422,21 +422,53 @@ namespace AccessibilityMod.Patches
                 {
                     int speakerId = 0;
 
-                    // Get speaker_id from message_work - this is the unique identifier for who's speaking
-                    // The speaker_id may have bit 128 set for certain message types, so mask it off
+                    // GS3 uses different ID systems: name_plate receives one ID format while
+                    // message_work_.speaker_id uses another. The GS3_NAMES dictionary is keyed
+                    // by message_work_.speaker_id values, so we must use that for GS3.
+                    // For GS1/GS2, prefer _lastSpeakerId from name_plate calls since
+                    // message_work_.speaker_id can be stale in certain modes (e.g., 3D examination).
+                    bool isGS3 = false;
                     try
                     {
-                        if (GSStatic.message_work_ != null)
-                        {
-                            speakerId = GSStatic.message_work_.speaker_id & 0x7F;
-                        }
+                        isGS3 =
+                            GSStatic.global_work_ != null
+                            && GSStatic.global_work_.title == TitleId.GS3;
                     }
                     catch { }
 
-                    // Fallback to cached _lastSpeakerId from name_plate calls if message_work unavailable
-                    if (speakerId <= 0 && _lastSpeakerId > 0)
+                    if (isGS3)
                     {
-                        speakerId = _lastSpeakerId;
+                        // For GS3, always use message_work_.speaker_id (dictionary keys match this)
+                        try
+                        {
+                            if (GSStatic.message_work_ != null)
+                            {
+                                speakerId = GSStatic.message_work_.speaker_id & 0x7F;
+                            }
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        // For GS1/GS2, prefer _lastSpeakerId from name_plate calls
+                        // since message_work_.speaker_id can be stale during 3D examination
+                        if (_lastSpeakerId > 0)
+                        {
+                            speakerId = _lastSpeakerId;
+                        }
+
+                        // Fallback to message_work_.speaker_id if name_plate wasn't called
+                        if (speakerId <= 0)
+                        {
+                            try
+                            {
+                                if (GSStatic.message_work_ != null)
+                                {
+                                    speakerId = GSStatic.message_work_.speaker_id & 0x7F;
+                                }
+                            }
+                            catch { }
+                        }
                     }
 
                     if (speakerId > 0)
