@@ -19,6 +19,8 @@ namespace AccessibilityMod.Patches
         private static bool _isOpeningActive = false;
         private static List<string> _openingLines = new List<string>();
         private static int _lastOutputLine = -1;
+        private static string _lastDecodedFullText = ""; // Track full decoded text to prevent duplicate outputs
+        private static int _pendingType = -1; // Type to decode on first PcViewNext (deferred decoding)
 
         // Cached reflection info for accessing private fields
         private static FieldInfo _dspField = null;
@@ -37,19 +39,16 @@ namespace AccessibilityMod.Patches
         {
             try
             {
+                // For GS3 episode 4 opening, SetOp4SysMess (which loads moji_code_) is called
+                // AFTER PcViewInitialize for type 1. So we defer decoding to the first PcViewNext
+                // call when the text is guaranteed to be loaded.
                 _isOpeningActive = true;
                 _lastOutputLine = -1;
-                DecodeOpeningText(type);
-
-                // Output the first line immediately when opening starts
-                if (_openingLines.Count > 0)
-                {
-                    OutputLine(0);
-                    _lastOutputLine = 0;
-                }
+                _pendingType = type;
+                _openingLines.Clear();
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
-                    $"Opening narration started (type {type}), decoded {_openingLines.Count} lines"
+                    $"Opening narration initialized (type {type}), deferring text decode"
                 );
             }
             catch (Exception ex)
@@ -72,6 +71,25 @@ namespace AccessibilityMod.Patches
             {
                 if (!_isOpeningActive)
                     return;
+
+                // Deferred decoding: decode on first PcViewNext call when text is guaranteed to be loaded
+                if (_pendingType >= 0)
+                {
+                    int type = _pendingType;
+                    _pendingType = -1;
+
+                    bool hasNewText = DecodeOpeningText(type);
+                    if (hasNewText && _openingLines.Count > 0)
+                    {
+                        OutputLine(0);
+                        _lastOutputLine = 0;
+
+                        AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                            $"Opening narration started (type {type}), decoded {_openingLines.Count} lines"
+                        );
+                    }
+                    return;
+                }
 
                 int currentLine = GetPcViewLine(__instance);
                 if (currentLine < 0)
@@ -139,6 +157,8 @@ namespace AccessibilityMod.Patches
                 _isOpeningActive = false;
                 _openingLines.Clear();
                 _lastOutputLine = -1;
+                _lastDecodedFullText = ""; // Reset for next opening
+                _pendingType = -1;
             }
             catch (Exception ex)
             {
@@ -319,28 +339,28 @@ namespace AccessibilityMod.Patches
         /// <summary>
         /// Decode opening text from the dsp.moji_code_ array.
         /// Character codes > 128 represent text (subtract 128 to get actual char).
-        /// Split into lines based on character counts per line for the current language.
+        /// Returns true if new text was decoded, false if it was duplicate/empty.
         /// </summary>
-        private static void DecodeOpeningText(int type)
+        private static bool DecodeOpeningText(int type)
         {
             _openingLines.Clear();
 
             if (!InitializeReflection())
-                return;
+                return false;
 
             try
             {
                 // Get the dsp struct value
                 var dsp = _dspField.GetValue(null);
                 if (dsp == null)
-                    return;
+                    return false;
 
                 // Get the moji_code_ array
                 var mojiCodes = (ushort[])_mojiCodeField.GetValue(dsp);
                 if (mojiCodes == null)
-                    return;
+                    return false;
 
-                // First, decode all characters into a single string
+                // Decode all characters into a single string
                 StringBuilder fullText = new StringBuilder();
                 foreach (ushort code in mojiCodes)
                 {
@@ -350,55 +370,119 @@ namespace AccessibilityMod.Patches
                     if (code > 128)
                     {
                         // Text character: subtract 128 to get actual char
-                        fullText.Append((char)(code - 128));
+                        char c = (char)(code - 128);
+                        // Convert full-width ASCII to half-width
+                        c = ConvertFullWidthToHalfWidth(c);
+                        fullText.Append(c);
                     }
                     // Skip control codes (code <= 128 and != 0)
                 }
 
                 if (fullText.Length == 0)
-                    return;
+                    return false;
 
-                // Split into lines based on character counts for current language
-                SplitIntoLines(fullText.ToString(), type);
+                string fullTextStr = fullText.ToString();
+
+                // Check if this is the same text we already decoded (prevents re-reading
+                // when PcViewInitialize is called with different types but same moji_code_)
+                if (fullTextStr == _lastDecodedFullText)
+                {
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                        $"Opening text unchanged for type {type}, skipping duplicate output"
+                    );
+                    return false;
+                }
+
+                _lastDecodedFullText = fullTextStr;
+
+                // Insert spaces at line boundaries and store as single output
+                string formattedText = InsertLineBreakSpaces(fullTextStr, type);
+                _openingLines.Add(formattedText.Trim());
+                return true;
             }
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error decoding opening text: {ex.Message}"
                 );
+                return false;
             }
         }
 
         /// <summary>
-        /// Split decoded text into lines based on font character counts.
-        /// Different languages have different character counts per line.
+        /// Convert full-width ASCII characters (U+FF01-U+FF5E) to half-width (U+0021-U+007E).
+        /// Also converts full-width space (U+3000) to regular space.
         /// </summary>
-        private static void SplitIntoLines(string fullText, int type)
+        private static char ConvertFullWidthToHalfWidth(char c)
         {
-            // Get character counts per line based on language
-            int[] charCounts = GetCharCountsForLanguage(type);
+            // Full-width ASCII: U+FF01 (！) to U+FF5E (～) maps to U+0021 (!) to U+007E (~)
+            if (c >= '\uFF01' && c <= '\uFF5E')
+            {
+                return (char)(c - 0xFEE0);
+            }
+            // Full-width space U+3000 to regular space
+            if (c == '\u3000')
+            {
+                return ' ';
+            }
+            return c;
+        }
 
+        /// <summary>
+        /// Insert spaces at line boundaries where the game would visually wrap text.
+        /// The game stores text without spaces at line breaks since the visual break serves as separator.
+        /// </summary>
+        private static string InsertLineBreakSpaces(string text, int type)
+        {
+            int[] charCounts = GetCharCountsForLanguage(type);
+            if (charCounts == null || charCounts.Length == 0)
+                return text;
+
+            StringBuilder result = new StringBuilder();
             int textIndex = 0;
+
             for (
                 int lineIndex = 0;
-                lineIndex < charCounts.Length && textIndex < fullText.Length;
+                lineIndex < charCounts.Length && textIndex < text.Length;
                 lineIndex++
             )
             {
-                int lineLength = Math.Min(charCounts[lineIndex], fullText.Length - textIndex);
+                int lineLength = Math.Min(charCounts[lineIndex], text.Length - textIndex);
                 if (lineLength > 0)
                 {
-                    string line = fullText.Substring(textIndex, lineLength);
-                    _openingLines.Add(line.Trim());
+                    string line = text.Substring(textIndex, lineLength);
+
+                    // Add space before this line if needed (not first line, and no existing space)
+                    if (
+                        result.Length > 0
+                        && !char.IsWhiteSpace(result[result.Length - 1])
+                        && !char.IsWhiteSpace(line[0])
+                    )
+                    {
+                        result.Append(' ');
+                    }
+
+                    result.Append(line);
                     textIndex += lineLength;
                 }
             }
 
-            // If there's remaining text, add it as final line(s)
-            if (textIndex < fullText.Length)
+            // Append any remaining text
+            if (textIndex < text.Length)
             {
-                _openingLines.Add(fullText.Substring(textIndex).Trim());
+                string remaining = text.Substring(textIndex);
+                if (
+                    result.Length > 0
+                    && !char.IsWhiteSpace(result[result.Length - 1])
+                    && !char.IsWhiteSpace(remaining[0])
+                )
+                {
+                    result.Append(' ');
+                }
+                result.Append(remaining);
             }
+
+            return result.ToString();
         }
 
         /// <summary>
@@ -411,8 +495,8 @@ namespace AccessibilityMod.Patches
             {
                 var language = GSStatic.global_work_.language;
 
-                // Type 0: First part of opening (3 lines for JP, 7 for Western)
-                // Type 1: Second part (5 lines for JP, 7 for Western)
+                // Type 0: First part of opening (defendant info card)
+                // Type 1: Second part (narrative text)
                 if (type == 0)
                 {
                     switch (language)
@@ -420,23 +504,18 @@ namespace AccessibilityMod.Patches
                         case Language.JAPAN:
                             return new int[] { 9, 8, 6 };
                         case Language.USA:
-                            return new int[] { 18, 26, 24, 22, 18, 18, 18 };
+                            return new int[] { 18, 26, 24 };
                         case Language.FRANCE:
-                            return new int[] { 20, 34, 25, 18, 23, 20, 17 };
+                            return new int[] { 20, 34, 25 };
                         case Language.GERMAN:
-                            return new int[] { 18, 25, 20, 20, 23, 21, 14 };
+                            return new int[] { 18, 25, 20 };
                         case Language.KOREA:
                             return new int[] { 11, 8, 6 };
                         case Language.CHINA_S:
-                            return new int[] { 9, 8, 6 };
                         case Language.CHINA_T:
                             return new int[] { 9, 8, 6 };
-                        case Language.Pt_BR:
-                            return new int[] { 18, 31, 24, 21, 22, 21, 16 };
-                        case Language.ES_419:
-                            return new int[] { 22, 28, 26, 22, 18, 24, 13 };
                         default:
-                            return new int[] { 9, 8, 6 };
+                            return new int[] { 18, 26, 24 };
                     }
                 }
                 else // type 1
@@ -446,7 +525,7 @@ namespace AccessibilityMod.Patches
                         case Language.JAPAN:
                             return new int[] { 9, 11, 11, 11, 17 };
                         case Language.USA:
-                            return new int[] { 28, 19, 12, 18, 26, 24, 22 };
+                            return new int[] { 22, 18, 18, 18, 28, 19, 11 };
                         case Language.FRANCE:
                             return new int[] { 20, 30, 13, 20, 34, 25, 18 };
                         case Language.GERMAN:
@@ -457,19 +536,14 @@ namespace AccessibilityMod.Patches
                             return new int[] { 9, 11, 13, 12, 11 };
                         case Language.CHINA_T:
                             return new int[] { 9, 13, 13, 12, 12 };
-                        case Language.Pt_BR:
-                            return new int[] { 30, 28, 12, 18, 31, 24, 21 };
-                        case Language.ES_419:
-                            return new int[] { 27, 26, 26, 22, 28, 26, 22 };
                         default:
-                            return new int[] { 9, 11, 11, 11, 17 };
+                            return new int[] { 22, 18, 18, 18, 28, 19, 11 };
                     }
                 }
             }
             catch
             {
-                // Fallback to reasonable defaults
-                return new int[] { 20, 20, 20, 20, 20 };
+                return null;
             }
         }
 
