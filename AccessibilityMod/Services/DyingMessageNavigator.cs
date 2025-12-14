@@ -105,7 +105,7 @@ namespace AccessibilityMod.Services
             _currentDotIndex = -1;
             _dotCount = GetDotCount();
 
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"Dying message puzzle. {_dotCount} dots. Connect dots to spell EMA. Use [ and ] to navigate dots, Enter on a dot to start a line, Enter on another dot to connect. Q to undo last line. Press H for hint.",
                 TextType.Investigation
             );
@@ -148,7 +148,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                ClipboardManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
                 return;
             }
 
@@ -167,7 +167,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                ClipboardManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
                 return;
             }
 
@@ -228,7 +228,7 @@ namespace AccessibilityMod.Services
 
                 // Announce the dot
                 string description = GetDotDescription(_currentDotIndex);
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Dot {_currentDotIndex + 1}: {description}",
                     TextType.Investigation
                 );
@@ -277,7 +277,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                ClipboardManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
                 return;
             }
 
@@ -319,11 +319,11 @@ namespace AccessibilityMod.Services
                         break;
                 }
 
-                ClipboardManager.Announce(hint, TextType.Investigation);
+                SpeechManager.Announce(hint, TextType.Investigation);
             }
             catch
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Connect the dots to spell EMA. For E: connect 1-2, 1-6, 6-7. For M: connect 3-4, 3-10. For A: connect 5-8, 5-9, 8-9.",
                     TextType.Investigation
                 );
@@ -357,7 +357,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                ClipboardManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
                 return;
             }
 
@@ -417,14 +417,14 @@ namespace AccessibilityMod.Services
                 string locationInfo =
                     _currentDotIndex >= 0 ? $"At dot {_currentDotIndex + 1} of {count}. " : "";
 
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Dying message. {locationInfo}{lineCount} line{(lineCount != 1 ? "s" : "")} drawn. Status: {stateStr}. Press H for hint.",
                     TextType.Investigation
                 );
             }
             catch
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Dying message puzzle. Use [ and ] to navigate dots, Enter to connect, Q to undo, E to present.",
                     TextType.Investigation
                 );
@@ -438,7 +438,7 @@ namespace AccessibilityMod.Services
         {
             string fromDesc = GetDotDescription(from);
             string toDesc = GetDotDescription(to);
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"Connected dot {from + 1} ({fromDesc}) to dot {to + 1} ({toDesc})",
                 TextType.Investigation
             );
@@ -449,7 +449,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         public static void OnLineDeleted()
         {
-            ClipboardManager.Announce("Line removed", TextType.Investigation);
+            SpeechManager.Announce("Line removed", TextType.Investigation);
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace AccessibilityMod.Services
         public static void OnLineStarted(int dotIndex)
         {
             string desc = GetDotDescription(dotIndex);
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"Line started from dot {dotIndex + 1} ({desc}). Navigate to another dot and press Enter to connect.",
                 TextType.Investigation
             );
@@ -469,7 +469,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         public static void OnLineCancelled()
         {
-            ClipboardManager.Announce("Line cancelled", TextType.Investigation);
+            SpeechManager.Announce("Line cancelled", TextType.Investigation);
         }
     }
 }

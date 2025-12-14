@@ -30,7 +30,7 @@ namespace AccessibilityMod.Services
                 var instance = UnityEngine.Object.FindObjectOfType<GalleryOrchestraCtrl>();
                 if (instance == null)
                 {
-                    ClipboardManager.Announce("Music player", TextType.Menu);
+                    SpeechManager.Announce("Music player", TextType.Menu);
                     return;
                 }
 
@@ -63,14 +63,14 @@ namespace AccessibilityMod.Services
                     announcement += $". Mode: {state.PlayModeName}";
                 }
 
-                ClipboardManager.Announce(announcement, TextType.Menu);
+                SpeechManager.Announce(announcement, TextType.Menu);
             }
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing orchestra state: {ex.Message}"
                 );
-                ClipboardManager.Announce("Music player", TextType.Menu);
+                SpeechManager.Announce("Music player", TextType.Menu);
             }
         }
 
@@ -90,7 +90,7 @@ namespace AccessibilityMod.Services
                 + "I announces current state. "
                 + "Backspace exits.";
 
-            ClipboardManager.Announce(help, TextType.Menu);
+            SpeechManager.Announce(help, TextType.Menu);
         }
     }
 }

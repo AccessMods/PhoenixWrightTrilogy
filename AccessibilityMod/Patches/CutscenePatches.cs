@@ -247,7 +247,7 @@ namespace AccessibilityMod.Patches
                 _lastDemoText = text;
 
                 // Output as narrator (no speaker name for opening narration)
-                ClipboardManager.Output("", text, TextType.Narrator);
+                SpeechManager.Output("", text, TextType.Narrator);
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
                     $"Opening text captured: {text}"
@@ -561,7 +561,7 @@ namespace AccessibilityMod.Patches
                 string line = _openingLines[lineIndex];
                 if (!Net35Extensions.IsNullOrWhiteSpace(line))
                 {
-                    ClipboardManager.Output("", line, TextType.Narrator);
+                    SpeechManager.Output("", line, TextType.Narrator);
                 }
             }
         }

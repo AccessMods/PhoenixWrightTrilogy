@@ -315,7 +315,7 @@ namespace AccessibilityMod.Services
 
                 if (!string.IsNullOrEmpty(announcement))
                 {
-                    ClipboardManager.Announce(announcement, TextType.Investigation);
+                    SpeechManager.Announce(announcement, TextType.Investigation);
                 }
             }
             catch
@@ -354,7 +354,7 @@ namespace AccessibilityMod.Services
 
         private static void OnPowderStart()
         {
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 "Powder phase. Move cursor with arrow keys while pressing Enter to spread powder across the area. Press E to blow when done.",
                 TextType.Investigation
             );
@@ -363,7 +363,7 @@ namespace AccessibilityMod.Services
         private static void OnFingerprintStart()
         {
             int count = GetFingerprintLocationCount();
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"Fingerprint examination. {count} location{(count != 1 ? "s" : "")} to examine. Use [ and ] to navigate, Enter to examine. Press H for hint.",
                 TextType.Investigation
             );
@@ -377,7 +377,7 @@ namespace AccessibilityMod.Services
         private static void OnComparisonStart()
         {
             _lastCompCursor = -1;
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 "Fingerprint comparison. Use Left/Right to select suspect, E to compare. Press H for hint.",
                 TextType.Investigation
             );
@@ -390,7 +390,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsFingerprintActive())
             {
-                ClipboardManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
                 return;
             }
 
@@ -408,7 +408,7 @@ namespace AccessibilityMod.Services
             }
             else
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Use [ and ] to navigate fingerprint locations, Enter to examine.",
                     TextType.Investigation
                 );
@@ -418,7 +418,7 @@ namespace AccessibilityMod.Services
         private static void AnnounceSelectionHint()
         {
             int count = GetFingerprintLocationCount();
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"{count} fingerprint location{(count != 1 ? "s" : "")} to examine. Use [ and ] to navigate between locations, Enter to examine the selected area.",
                 TextType.Investigation
             );
@@ -426,7 +426,7 @@ namespace AccessibilityMod.Services
 
         private static void AnnouncePowderHint()
         {
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 "Move cursor with arrow keys while pressing Enter to spread powder across the area. Press E to blow away excess and reveal the print.",
                 TextType.Investigation
             );
@@ -434,7 +434,7 @@ namespace AccessibilityMod.Services
 
         private static void AnnounceComparisonHint()
         {
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 "Use Left/Right to select suspect, E to compare.",
                 TextType.Investigation
             );
@@ -466,7 +466,7 @@ namespace AccessibilityMod.Services
                         int charIndex = DisplayToCharacter[cursor];
                         string name = CharacterNames[charIndex];
 
-                        ClipboardManager.Announce(name, TextType.Investigation);
+                        SpeechManager.Announce(name, TextType.Investigation);
                     }
                 }
             }
@@ -483,7 +483,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsFingerprintActive())
             {
-                ClipboardManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
                 return;
             }
 
@@ -502,7 +502,7 @@ namespace AccessibilityMod.Services
                         int charIndex = DisplayToCharacter[cursor];
                         string name = CharacterNames[charIndex];
 
-                        ClipboardManager.Announce(
+                        SpeechManager.Announce(
                             $"Fingerprint comparison. {name} selected. Press H for hint.",
                             TextType.Investigation
                         );
@@ -514,14 +514,14 @@ namespace AccessibilityMod.Services
                     // Fall through
                 }
 
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Fingerprint comparison phase. Press H for hint.",
                     TextType.Investigation
                 );
             }
             else if (IsInPowderPhase())
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Powder phase. Move cursor with arrow keys while pressing Enter to apply powder. Press E to blow when done.",
                     TextType.Investigation
                 );
@@ -533,14 +533,14 @@ namespace AccessibilityMod.Services
                     _currentLocationIndex >= 0
                         ? $"Location {_currentLocationIndex + 1} of {count}. "
                         : $"{count} location{(count != 1 ? "s" : "")}. ";
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Selection phase. {locationInfo}Use [ and ] to navigate, Enter to examine. Press H for hint.",
                     TextType.Investigation
                 );
             }
             else
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Fingerprint examination. Press H for hint.",
                     TextType.Investigation
                 );
@@ -586,13 +586,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsFingerprintActive())
             {
-                ClipboardManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
                 return;
             }
 
             if (!IsInSelectionPhase())
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Navigation only available in selection phase",
                     TextType.SystemMessage
                 );
@@ -602,7 +602,7 @@ namespace AccessibilityMod.Services
             int count = GetFingerprintLocationCount();
             if (count == 0)
             {
-                ClipboardManager.Announce("No fingerprint locations found", TextType.Investigation);
+                SpeechManager.Announce("No fingerprint locations found", TextType.Investigation);
                 return;
             }
 
@@ -617,13 +617,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsFingerprintActive())
             {
-                ClipboardManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in fingerprint mode", TextType.SystemMessage);
                 return;
             }
 
             if (!IsInSelectionPhase())
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Navigation only available in selection phase",
                     TextType.SystemMessage
                 );
@@ -633,7 +633,7 @@ namespace AccessibilityMod.Services
             int count = GetFingerprintLocationCount();
             if (count == 0)
             {
-                ClipboardManager.Announce("No fingerprint locations found", TextType.Investigation);
+                SpeechManager.Announce("No fingerprint locations found", TextType.Investigation);
                 return;
             }
 
@@ -666,7 +666,7 @@ namespace AccessibilityMod.Services
 
                 // Announce the location
                 string positionDesc = GetPositionDescription(center.x, center.y);
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Location {_currentLocationIndex + 1} of {count} ({positionDesc}). Press Enter to examine.",
                     TextType.Investigation
                 );

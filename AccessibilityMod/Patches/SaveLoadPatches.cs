@@ -23,7 +23,7 @@ namespace AccessibilityMod.Patches
                 string message = GetMessageBoxText(__instance);
                 if (!Net35Extensions.IsNullOrWhiteSpace(message))
                 {
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace AccessibilityMod.Patches
                 string message = GetSavePriorConfirmationText(__instance);
                 if (!Net35Extensions.IsNullOrWhiteSpace(message))
                 {
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -131,7 +131,7 @@ namespace AccessibilityMod.Patches
                 string message = TextDataCtrl.GetText(TextDataCtrl.SaveTextID.ADD_NEW_EPISODE);
                 if (!Net35Extensions.IsNullOrWhiteSpace(message))
                 {
-                    ClipboardManager.Announce(message, TextType.Dialogue);
+                    SpeechManager.Announce(message, TextType.Dialogue);
                 }
             }
             catch (Exception ex)
@@ -156,7 +156,7 @@ namespace AccessibilityMod.Patches
                     string optionText = GetOptionSaveText(__instance, cursorNum);
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        ClipboardManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, TextType.Menu);
                     }
                 }
             }
@@ -179,7 +179,7 @@ namespace AccessibilityMod.Patches
                 string optionText = GetOptionSaveText(__instance, 0);
                 if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                 {
-                    ClipboardManager.Announce(optionText, TextType.Menu);
+                    SpeechManager.Announce(optionText, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -246,7 +246,7 @@ namespace AccessibilityMod.Patches
                 var slotType = GetSlotType(__instance);
                 string typeName = slotType == 0 ? "Save" : "Load";
 
-                ClipboardManager.Announce($"{typeName} menu opened", TextType.Menu);
+                SpeechManager.Announce($"{typeName} menu opened", TextType.Menu);
                 _lastSlotCursor = -1;
             }
             catch (Exception ex)
@@ -274,7 +274,7 @@ namespace AccessibilityMod.Patches
                 string message = GetSaveConfirmationMessage(__instance);
                 if (!Net35Extensions.IsNullOrWhiteSpace(message))
                 {
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -364,7 +364,7 @@ namespace AccessibilityMod.Patches
 
                 if (!hasData)
                 {
-                    ClipboardManager.Announce($"Slot {slotNo + 1}: No Data", TextType.Menu);
+                    SpeechManager.Announce($"Slot {slotNo + 1}: No Data", TextType.Menu);
                     return;
                 }
 
@@ -448,7 +448,7 @@ namespace AccessibilityMod.Patches
                     );
                 }
 
-                ClipboardManager.Announce(slotInfo, TextType.Menu);
+                SpeechManager.Announce(slotInfo, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -512,7 +512,7 @@ namespace AccessibilityMod.Patches
                     CoroutineRunner.Instance?.CancelDelayedAnnouncement();
 
                     string categoryName = GetCategoryName(cat);
-                    ClipboardManager.Announce($"Options: {categoryName}", TextType.Menu);
+                    SpeechManager.Announce($"Options: {categoryName}", TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -550,7 +550,7 @@ namespace AccessibilityMod.Patches
                 else
                     message = optionName;
 
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
 
                 // Schedule delayed tooltip announcement
                 ScheduleTooltipAnnouncement(__instance);
@@ -898,7 +898,7 @@ namespace AccessibilityMod.Patches
                 string value = GetOptionValue(item);
                 if (!Net35Extensions.IsNullOrWhiteSpace(value))
                 {
-                    ClipboardManager.Announce(value, TextType.Menu);
+                    SpeechManager.Announce(value, TextType.Menu);
                 }
             }
             catch (Exception ex)

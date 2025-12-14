@@ -98,7 +98,7 @@ namespace AccessibilityMod.Services
 
                     // Convert to percentage for clearer announcement
                     int zoomPercent = (int)(currentZoom * 100);
-                    ClipboardManager.Announce($"Zoom {zoomPercent}%", TextType.Menu);
+                    SpeechManager.Announce($"Zoom {zoomPercent}%", TextType.Menu);
                 }
             }
             catch { }
@@ -220,7 +220,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No hotspots found", TextType.Menu);
+                SpeechManager.Announce("No hotspots found", TextType.Menu);
                 return;
             }
 
@@ -240,7 +240,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No hotspots found", TextType.Menu);
+                SpeechManager.Announce("No hotspots found", TextType.Menu);
                 return;
             }
 
@@ -504,7 +504,7 @@ namespace AccessibilityMod.Services
 
                 // Announce the hotspot
                 string message = $"{hotspot.Name} of {_hotspots.Count}";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -512,7 +512,7 @@ namespace AccessibilityMod.Services
                     $"Error navigating to hotspot: {ex.Message}\n{ex.StackTrace}"
                 );
                 // Still announce even if navigation failed
-                ClipboardManager.Announce(hotspot.Name, TextType.Menu);
+                SpeechManager.Announce(hotspot.Name, TextType.Menu);
             }
         }
 
@@ -659,14 +659,14 @@ namespace AccessibilityMod.Services
                     message += " Use [ and ] to navigate hotspots.";
                 }
 
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing 3D state: {ex.Message}"
                 );
-                ClipboardManager.Announce("Unable to read 3D examination state", TextType.Menu);
+                SpeechManager.Announce("Unable to read 3D examination state", TextType.Menu);
             }
         }
 
@@ -676,7 +676,7 @@ namespace AccessibilityMod.Services
         public static void AnnounceZoom()
         {
             string zoomLevel = GetZoomLevel();
-            ClipboardManager.Announce($"Zoom: {zoomLevel}", TextType.Menu);
+            SpeechManager.Announce($"Zoom: {zoomLevel}", TextType.Menu);
         }
 
         /// <summary>
@@ -686,14 +686,11 @@ namespace AccessibilityMod.Services
         {
             if (IsOverHotspot())
             {
-                ClipboardManager.Announce(
-                    "Hotspot detected, press Enter to examine",
-                    TextType.Menu
-                );
+                SpeechManager.Announce("Hotspot detected, press Enter to examine", TextType.Menu);
             }
             else
             {
-                ClipboardManager.Announce("No hotspot under cursor", TextType.Menu);
+                SpeechManager.Announce("No hotspot under cursor", TextType.Menu);
             }
         }
 

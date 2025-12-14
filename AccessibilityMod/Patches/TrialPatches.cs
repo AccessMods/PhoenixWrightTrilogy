@@ -94,7 +94,7 @@ namespace AccessibilityMod.Patches
                         message = "Game Over!";
                     }
 
-                    ClipboardManager.Announce(message, TextType.Trial);
+                    SpeechManager.Announce(message, TextType.Trial);
                 }
             }
             catch (Exception ex)

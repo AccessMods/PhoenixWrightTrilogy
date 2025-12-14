@@ -72,11 +72,11 @@ namespace AccessibilityMod.Services
             {
                 string message =
                     $"Pointing mode. {_points.Count} target areas. Use [ and ] to navigate, E to present.";
-                ClipboardManager.Announce(message, TextType.Trial);
+                SpeechManager.Announce(message, TextType.Trial);
             }
             else
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Pointing mode. Use arrow keys to move cursor, E to present.",
                     TextType.Trial
                 );
@@ -200,7 +200,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                ClipboardManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
                 return;
             }
 
@@ -211,7 +211,7 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                ClipboardManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce("No target areas found", TextType.Trial);
                 return;
             }
 
@@ -227,7 +227,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                ClipboardManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
                 return;
             }
 
@@ -238,7 +238,7 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                ClipboardManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce("No target areas found", TextType.Trial);
                 return;
             }
 
@@ -254,12 +254,12 @@ namespace AccessibilityMod.Services
         {
             if (_points.Count == 0 || _currentIndex >= _points.Count)
             {
-                ClipboardManager.Announce("No point selected", TextType.Trial);
+                SpeechManager.Announce("No point selected", TextType.Trial);
                 return;
             }
 
             var point = _points[_currentIndex];
-            ClipboardManager.Announce(point.Description, TextType.Trial);
+            SpeechManager.Announce(point.Description, TextType.Trial);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                ClipboardManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
                 return;
             }
 
@@ -280,7 +280,7 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                ClipboardManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce("No target areas found", TextType.Trial);
                 return;
             }
 
@@ -292,7 +292,7 @@ namespace AccessibilityMod.Services
             }
             summary += string.Join(", ", descriptions.ToArray());
 
-            ClipboardManager.Announce(summary, TextType.Trial);
+            SpeechManager.Announce(summary, TextType.Trial);
         }
 
         /// <summary>

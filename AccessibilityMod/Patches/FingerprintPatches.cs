@@ -58,7 +58,7 @@ namespace AccessibilityMod.Patches
                             if (charIndex >= 0 && charIndex < CharacterNames.Length)
                             {
                                 string name = CharacterNames[charIndex];
-                                ClipboardManager.Announce(name, TextType.Investigation);
+                                SpeechManager.Announce(name, TextType.Investigation);
                             }
                         }
                     }
@@ -81,7 +81,7 @@ namespace AccessibilityMod.Patches
             {
                 if (__result)
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         "Fingerprint revealed! Proceeding to comparison.",
                         TextType.Investigation
                     );
@@ -106,14 +106,14 @@ namespace AccessibilityMod.Patches
 
                             if (percentage == 0)
                             {
-                                ClipboardManager.Announce(
+                                SpeechManager.Announce(
                                     "No powder on fingerprint. Move cursor while pressing Enter to apply powder.",
                                     TextType.Investigation
                                 );
                             }
                             else
                             {
-                                ClipboardManager.Announce(
+                                SpeechManager.Announce(
                                     $"{percentage} percent. Keep applying powder.",
                                     TextType.Investigation
                                 );
@@ -121,7 +121,7 @@ namespace AccessibilityMod.Patches
                         }
                         else
                         {
-                            ClipboardManager.Announce(
+                            SpeechManager.Announce(
                                 "Not enough powder. Keep applying.",
                                 TextType.Investigation
                             );

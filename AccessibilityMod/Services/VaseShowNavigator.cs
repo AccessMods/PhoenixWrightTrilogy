@@ -104,7 +104,7 @@ namespace AccessibilityMod.Services
                 + "Rotate the jar to match the Blue Badger silhouette. "
                 + "H and N for X axis, M and B for Y axis, Q and R for Z axis. "
                 + "Press I for current position, G for hint, E to present.";
-            ClipboardManager.Announce(message, TextType.Menu);
+            SpeechManager.Announce(message, TextType.Menu);
             _lastAnnouncedRotation = Vector3.zero;
         }
 
@@ -161,7 +161,7 @@ namespace AccessibilityMod.Services
                     message += "Z correct. ";
             }
 
-            ClipboardManager.Announce(message, TextType.Menu);
+            SpeechManager.Announce(message, TextType.Menu);
             _lastAnnouncedRotation = rotation;
         }
 
@@ -229,7 +229,7 @@ namespace AccessibilityMod.Services
                 hint += "Z aligned. ";
             }
 
-            ClipboardManager.Announce(hint, TextType.Menu);
+            SpeechManager.Announce(hint, TextType.Menu);
         }
 
         /// <summary>

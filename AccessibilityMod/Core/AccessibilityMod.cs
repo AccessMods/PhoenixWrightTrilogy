@@ -85,7 +85,7 @@ namespace AccessibilityMod.Core
                 && !AccessibilityState.IsInCourtRecordMode()
             )
             {
-                ClipboardManager.RepeatLast();
+                SpeechManager.RepeatLast();
             }
 
             // I - Announce current context/state
@@ -277,13 +277,13 @@ namespace AccessibilityMod.Core
             {
                 CharacterNameService.ReloadFromFiles();
                 EvidenceDetailService.ReloadFromFiles();
-                ClipboardManager.Announce("Configuration reloaded");
+                SpeechManager.Announce("Configuration reloaded");
                 Logger.Msg("Configuration files reloaded via F5");
             }
             catch (Exception ex)
             {
                 Logger.Error($"Error reloading config files: {ex.Message}");
-                ClipboardManager.Announce("Error reloading configuration");
+                SpeechManager.Announce("Error reloading configuration");
             }
         }
 
@@ -291,7 +291,6 @@ namespace AccessibilityMod.Core
         {
             if (CoroutineRunner.Instance != null)
             {
-                CoroutineRunner.Instance.StopClipboardProcessor();
                 UnityEngine.Object.Destroy(CoroutineRunner.Instance.gameObject);
             }
 

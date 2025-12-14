@@ -477,7 +477,7 @@ namespace AccessibilityMod.Patches
                     }
                 }
 
-                ClipboardManager.Output(speakerName, text, TextType.Dialogue);
+                SpeechManager.Output(speakerName, text, TextType.Dialogue);
             }
             catch (Exception ex)
             {

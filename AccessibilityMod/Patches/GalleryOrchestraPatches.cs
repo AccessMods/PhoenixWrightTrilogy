@@ -168,7 +168,7 @@ namespace AccessibilityMod.Patches
                     if (!Net35Extensions.IsNullOrWhiteSpace(songTitle))
                     {
                         string announcement = $"Track {index + 1}: {songTitle}";
-                        ClipboardManager.Announce(announcement, TextType.Menu);
+                        SpeechManager.Announce(announcement, TextType.Menu);
                     }
                 }
                 catch (Exception ex)
@@ -205,7 +205,7 @@ namespace AccessibilityMod.Patches
                 string albumName = GetAlbumName(title);
                 if (!Net35Extensions.IsNullOrWhiteSpace(albumName))
                 {
-                    ClipboardManager.Announce(albumName, TextType.Menu);
+                    SpeechManager.Announce(albumName, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -243,7 +243,7 @@ namespace AccessibilityMod.Patches
                 if (!Net35Extensions.IsNullOrWhiteSpace(modeName))
                 {
                     string announcement = $"Play mode: {modeName}";
-                    ClipboardManager.Announce(announcement, TextType.Menu);
+                    SpeechManager.Announce(announcement, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -282,7 +282,7 @@ namespace AccessibilityMod.Patches
                 if (!Net35Extensions.IsNullOrWhiteSpace(songTitle))
                 {
                     string announcement = $"Now playing: {songTitle}";
-                    ClipboardManager.Announce(announcement, TextType.Menu);
+                    SpeechManager.Announce(announcement, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -302,7 +302,7 @@ namespace AccessibilityMod.Patches
                 // Only announce manual stops
                 if (manual_select)
                 {
-                    ClipboardManager.Announce("Stopped", TextType.Menu);
+                    SpeechManager.Announce("Stopped", TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -325,7 +325,7 @@ namespace AccessibilityMod.Patches
             {
                 _isOrchestraActive = true;
                 ResetState();
-                ClipboardManager.Announce("Music player. Press F1 for controls.", TextType.Menu);
+                SpeechManager.Announce("Music player. Press F1 for controls.", TextType.Menu);
             }
             catch (Exception ex)
             {

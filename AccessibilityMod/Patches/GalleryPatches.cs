@@ -29,7 +29,7 @@ namespace AccessibilityMod.Patches
             {
                 _isGalleryActive = true;
                 _lastAnnouncedIndex = -1;
-                ClipboardManager.Announce("Gallery. Use up and down to select.", TextType.Menu);
+                SpeechManager.Announce("Gallery. Use up and down to select.", TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace AccessibilityMod.Patches
                 string itemName = GetGalleryItemName(idx);
                 if (!Net35Extensions.IsNullOrWhiteSpace(itemName))
                 {
-                    ClipboardManager.Announce(itemName, TextType.Menu);
+                    SpeechManager.Announce(itemName, TextType.Menu);
                 }
             }
             catch (Exception ex)

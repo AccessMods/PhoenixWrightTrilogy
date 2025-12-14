@@ -153,7 +153,7 @@ namespace AccessibilityMod.Services
             string scrollHint = IsScrollableBackground() ? " Press Q to pan left/right." : "";
             string message =
                 $"Bug sweeper mode.{targetInfo} Move cursor to scan for listening devices.{scrollHint}";
-            ClipboardManager.Announce(message, TextType.Investigation);
+            SpeechManager.Announce(message, TextType.Investigation);
         }
 
         private static void OnBugSweeperEnd()
@@ -347,7 +347,7 @@ namespace AccessibilityMod.Services
         private static void OnSignalLevelChanged(int level)
         {
             string description = GetSignalDescription(level);
-            ClipboardManager.Announce(description, TextType.Investigation);
+            SpeechManager.Announce(description, TextType.Investigation);
         }
 
         /// <summary>
@@ -380,11 +380,11 @@ namespace AccessibilityMod.Services
             bool isChecked = IsTargetChecked(targetIndex);
             if (isChecked)
             {
-                ClipboardManager.Announce("Already checked.", TextType.Investigation);
+                SpeechManager.Announce("Already checked.", TextType.Investigation);
             }
             else
             {
-                ClipboardManager.Announce("Press Enter to check.", TextType.Investigation);
+                SpeechManager.Announce("Press Enter to check.", TextType.Investigation);
             }
         }
 
@@ -460,7 +460,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsBugSweeperActive())
             {
-                ClipboardManager.Announce("Not in bug sweeper mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in bug sweeper mode", TextType.SystemMessage);
                 return;
             }
 
@@ -487,7 +487,7 @@ namespace AccessibilityMod.Services
             string scrollHint = IsScrollableBackground() ? " Press Q to pan." : "";
 
             string message = $"Bug sweeper mode. {levelDesc}. {checkedInfo}{scrollHint}";
-            ClipboardManager.Announce(message, TextType.Investigation);
+            SpeechManager.Announce(message, TextType.Investigation);
         }
 
         /// <summary>

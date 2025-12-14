@@ -244,17 +244,14 @@ namespace AccessibilityMod.Services
                     stateInfo = "Current state unknown";
                 }
 
-                ClipboardManager.Announce(stateInfo, TextType.SystemMessage);
+                SpeechManager.Announce(stateInfo, TextType.SystemMessage);
             }
             catch (Exception ex)
             {
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing state: {ex.Message}"
                 );
-                ClipboardManager.Announce(
-                    "Unable to determine current state",
-                    TextType.SystemMessage
-                );
+                SpeechManager.Announce("Unable to determine current state", TextType.SystemMessage);
             }
         }
 
@@ -289,7 +286,7 @@ namespace AccessibilityMod.Services
                         message += " - DANGER!";
                     }
 
-                    ClipboardManager.Announce(message, TextType.Trial);
+                    SpeechManager.Announce(message, TextType.Trial);
                 }
             }
             catch (Exception ex)

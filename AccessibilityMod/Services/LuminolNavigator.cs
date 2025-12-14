@@ -108,11 +108,11 @@ namespace AccessibilityMod.Services
                 string scrollHint = IsScrollableBackground() ? " Press Q to pan left/right." : "";
                 string message =
                     $"Luminol spray mode. {undiscoveredCount} blood trace{(undiscoveredCount != 1 ? "s" : "")} to find. Use [ and ] to navigate, Enter to spray.{scrollHint}";
-                ClipboardManager.Announce(message, TextType.Investigation);
+                SpeechManager.Announce(message, TextType.Investigation);
             }
             else
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Luminol spray mode. Use arrow keys to move cursor, Enter to spray, B to exit.",
                     TextType.Investigation
                 );
@@ -281,7 +281,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                ClipboardManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
                 return;
             }
 
@@ -292,7 +292,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No blood traces found", TextType.Investigation);
+                SpeechManager.Announce("No blood traces found", TextType.Investigation);
                 return;
             }
 
@@ -328,7 +328,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                ClipboardManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
                 return;
             }
 
@@ -339,7 +339,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No blood traces found", TextType.Investigation);
+                SpeechManager.Announce("No blood traces found", TextType.Investigation);
                 return;
             }
 
@@ -403,7 +403,7 @@ namespace AccessibilityMod.Services
             {
                 // Tell user to scroll, then announce hotspot
                 string scrollDir = hotspot.IsOnRightSide ? "right" : "left";
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"{hotspot.Description}. Press Q to pan {scrollDir} first.",
                     TextType.Investigation
                 );
@@ -423,12 +423,12 @@ namespace AccessibilityMod.Services
         {
             if (_hotspots.Count == 0 || _currentIndex < 0 || _currentIndex >= _hotspots.Count)
             {
-                ClipboardManager.Announce("No blood trace selected", TextType.Investigation);
+                SpeechManager.Announce("No blood trace selected", TextType.Investigation);
                 return;
             }
 
             var hotspot = _hotspots[_currentIndex];
-            ClipboardManager.Announce(hotspot.Description, TextType.Investigation);
+            SpeechManager.Announce(hotspot.Description, TextType.Investigation);
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace AccessibilityMod.Services
                     ? $"Blood trace found! {remaining} remaining."
                     : "Blood trace found! All traces discovered.";
 
-            ClipboardManager.Announce(message, TextType.Investigation);
+            SpeechManager.Announce(message, TextType.Investigation);
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                ClipboardManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
                 return;
             }
 
@@ -555,7 +555,7 @@ namespace AccessibilityMod.Services
             string scrollHint = IsScrollableBackground() ? " Press Q to pan." : "";
             string message =
                 $"Luminol spray mode. {remaining} of {total} blood trace{(total != 1 ? "s" : "")} remaining. Use [ and ] to navigate.{scrollHint}";
-            ClipboardManager.Announce(message, TextType.Investigation);
+            SpeechManager.Announce(message, TextType.Investigation);
         }
     }
 }

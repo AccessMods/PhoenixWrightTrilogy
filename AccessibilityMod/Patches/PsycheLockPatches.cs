@@ -107,7 +107,7 @@ namespace AccessibilityMod.Patches
 
                 string lockWord = _totalLocks == 1 ? "Psyche-Lock" : "Psyche-Locks";
                 string message = $"{_totalLocks} {lockWord}";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
                     $"Psyche-Lock initialized with {_totalLocks} locks"
@@ -153,7 +153,7 @@ namespace AccessibilityMod.Patches
                     message = $"Lock broken! {remaining} {lockWord} remaining";
                 }
 
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
                     $"Psyche-Lock broken, {remaining} remaining"
@@ -174,10 +174,7 @@ namespace AccessibilityMod.Patches
         {
             try
             {
-                ClipboardManager.Announce(
-                    "All Psyche-Locks broken! Secret unlocked!",
-                    TextType.Menu
-                );
+                SpeechManager.Announce("All Psyche-Locks broken! Secret unlocked!", TextType.Menu);
                 _lastAnnouncedLockCount = -1;
                 _totalLocks = 0;
 
@@ -223,7 +220,7 @@ namespace AccessibilityMod.Patches
                     _lastAnnouncedLockCount = remaining;
                     string lockWord = remaining == 1 ? "Psyche-Lock" : "Psyche-Locks";
                     string message = $"{remaining} {lockWord} remaining";
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)

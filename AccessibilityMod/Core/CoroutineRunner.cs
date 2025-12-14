@@ -9,9 +9,6 @@ namespace AccessibilityMod.Core
     {
         public static CoroutineRunner Instance { get; private set; }
 
-        private Coroutine _clipboardCoroutine;
-        private const float ClipboardProcessInterval = 0.025f;
-
         // Delayed announcement support
         private Coroutine _delayedAnnouncementCoroutine;
         private int _delayedAnnouncementId = 0;
@@ -32,7 +29,7 @@ namespace AccessibilityMod.Core
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                StartClipboardProcessor();
+                SpeechManager.Initialize();
             }
             else
             {
@@ -88,7 +85,7 @@ namespace AccessibilityMod.Core
                             optionText,
                             cursorNo
                         );
-                        ClipboardManager.Announce(announcement, TextType.MenuChoice);
+                        SpeechManager.Announce(announcement, TextType.MenuChoice);
                     }
                     _lastSelectPlateCursor = cursorNo;
                 }
@@ -167,7 +164,7 @@ namespace AccessibilityMod.Core
                     string optionText = GetTitleSelectPlateOptionText(mainTitle, cursorNo);
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        ClipboardManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, TextType.Menu);
                     }
                     _lastTitleSelectCursor = cursorNo;
                 }
@@ -262,7 +259,7 @@ namespace AccessibilityMod.Core
 
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        ClipboardManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, TextType.Menu);
                     }
                     _lastSeriesSelectCursor = cursorNo;
                 }
@@ -326,7 +323,7 @@ namespace AccessibilityMod.Core
                     string optionText = GetGeneralSelectPlateOptionText(selectPlate, cursorNo);
                     if (!Net35Extensions.IsNullOrWhiteSpace(optionText))
                     {
-                        ClipboardManager.Announce(optionText, TextType.Menu);
+                        SpeechManager.Announce(optionText, TextType.Menu);
                     }
                     _lastGeneralSelectCursor = cursorNo;
                 }
@@ -394,10 +391,10 @@ namespace AccessibilityMod.Core
                 // Match the two sound effect hits from judgmentCtrl.CoroutineUSA
                 // First sound at frame 20 (~0.33s), second at frame 90 (~1.5s)
                 yield return new WaitForSeconds(0.33f);
-                ClipboardManager.Announce("Not", TextType.Trial);
+                SpeechManager.Announce("Not", TextType.Trial);
 
                 yield return new WaitForSeconds(1.17f); // 1.5s - 0.33s
-                ClipboardManager.Announce("Guilty", TextType.Trial);
+                SpeechManager.Announce("Guilty", TextType.Trial);
             }
             else
             {
@@ -407,7 +404,7 @@ namespace AccessibilityMod.Core
 
                 for (int i = 0; i < letters.Length; i++)
                 {
-                    ClipboardManager.Announce(letters[i], TextType.Trial);
+                    SpeechManager.Announce(letters[i], TextType.Trial);
                     if (i < letters.Length - 1)
                     {
                         yield return new WaitForSeconds(0.17f); // 10 frames between
@@ -470,7 +467,7 @@ namespace AccessibilityMod.Core
                     string text = getTextFunc();
                     if (!Net35Extensions.IsNullOrWhiteSpace(text))
                     {
-                        ClipboardManager.Announce(text, textType);
+                        SpeechManager.Announce(text, textType);
                     }
                 }
                 catch (Exception ex)
@@ -480,48 +477,6 @@ namespace AccessibilityMod.Core
             }
 
             _delayedAnnouncementCoroutine = null;
-        }
-
-        public void StartClipboardProcessor()
-        {
-            if (_clipboardCoroutine == null)
-            {
-                _clipboardCoroutine = StartCoroutine(ProcessClipboardQueue());
-            }
-        }
-
-        public void StopClipboardProcessor()
-        {
-            if (_clipboardCoroutine != null)
-            {
-                StopCoroutine(_clipboardCoroutine);
-                _clipboardCoroutine = null;
-            }
-        }
-
-        private IEnumerator ProcessClipboardQueue()
-        {
-            while (true)
-            {
-                string message = ClipboardManager.DequeueMessage();
-                if (message != null)
-                {
-                    try
-                    {
-                        GUIUtility.systemCopyBuffer = message;
-                    }
-                    catch (System.Exception ex)
-                    {
-                        AccessibilityMod.Logger?.Error($"Failed to set clipboard: {ex.Message}");
-                    }
-
-                    yield return new WaitForSeconds(ClipboardProcessInterval);
-                }
-                else
-                {
-                    yield return null;
-                }
-            }
         }
     }
 }

@@ -146,7 +146,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No points of interest found", TextType.Investigation);
+                SpeechManager.Announce("No points of interest found", TextType.Investigation);
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No points of interest found", TextType.Investigation);
+                SpeechManager.Announce("No points of interest found", TextType.Investigation);
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace AccessibilityMod.Services
 
             if (unexamined.Count == 0)
             {
-                ClipboardManager.Announce("All points examined", TextType.Investigation);
+                SpeechManager.Announce("All points examined", TextType.Investigation);
                 return;
             }
 
@@ -205,7 +205,7 @@ namespace AccessibilityMod.Services
                 }
             }
 
-            ClipboardManager.Announce("All points examined", TextType.Investigation);
+            SpeechManager.Announce("All points examined", TextType.Investigation);
         }
 
         private static void RefreshExaminedStatus()
@@ -225,7 +225,7 @@ namespace AccessibilityMod.Services
         {
             if (_hotspots.Count == 0 || _currentIndex >= _hotspots.Count)
             {
-                ClipboardManager.Announce("No point selected", TextType.Investigation);
+                SpeechManager.Announce("No point selected", TextType.Investigation);
                 return;
             }
 
@@ -233,7 +233,7 @@ namespace AccessibilityMod.Services
             string status = hotspot.IsExamined ? " (examined)" : "";
             string message = $"{hotspot.Description}{status}";
 
-            ClipboardManager.Announce(message, TextType.Investigation);
+            SpeechManager.Announce(message, TextType.Investigation);
         }
 
         public static void AnnounceAllHotspots()
@@ -247,7 +247,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                ClipboardManager.Announce("No points of interest", TextType.Investigation);
+                SpeechManager.Announce("No points of interest", TextType.Investigation);
                 return;
             }
 
@@ -265,7 +265,7 @@ namespace AccessibilityMod.Services
                 summary += string.Join(", ", unexaminedList.Select(h => h.Description).ToArray());
             }
 
-            ClipboardManager.Announce(summary, TextType.Investigation);
+            SpeechManager.Announce(summary, TextType.Investigation);
         }
 
         private static void MoveCursorToCurrentHotspot()
@@ -354,11 +354,11 @@ namespace AccessibilityMod.Services
                 }
                 message +=
                     ". Use [ and ] to navigate, U to jump to next unexamined point, H to list all.";
-                ClipboardManager.Announce(message, TextType.Investigation);
+                SpeechManager.Announce(message, TextType.Investigation);
             }
             else
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Investigation mode. No points of interest found.",
                     TextType.Investigation
                 );

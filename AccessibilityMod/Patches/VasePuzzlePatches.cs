@@ -47,14 +47,14 @@ namespace AccessibilityMod.Patches
 
                         if (remaining <= 0)
                         {
-                            ClipboardManager.Announce(
+                            SpeechManager.Announce(
                                 "Final piece placed! Puzzle complete!",
                                 TextType.Investigation
                             );
                         }
                         else
                         {
-                            ClipboardManager.Announce(
+                            SpeechManager.Announce(
                                 $"Piece placed! {remaining} remaining.",
                                 TextType.Investigation
                             );
@@ -102,7 +102,7 @@ namespace AccessibilityMod.Patches
                     // Proc.union_failure = 5
                     if (procId == 5)
                     {
-                        ClipboardManager.Announce(
+                        SpeechManager.Announce(
                             "Wrong piece or rotation. Press H for hint.",
                             TextType.Investigation
                         );
@@ -136,7 +136,7 @@ namespace AccessibilityMod.Patches
                     {
                         int displayNumber = i + 1;
                         int rotation = pieces[i].angle_id * 90;
-                        ClipboardManager.Announce(
+                        SpeechManager.Announce(
                             $"Piece {displayNumber}, {rotation} degrees",
                             TextType.Investigation
                         );
@@ -195,7 +195,7 @@ namespace AccessibilityMod.Patches
                     {
                         int displayNumber = cursor + 1;
                         int rotation = pieces[cursor].angle_id * 90;
-                        ClipboardManager.Announce(
+                        SpeechManager.Announce(
                             $"Piece {displayNumber}, {rotation} degrees",
                             TextType.Investigation
                         );

@@ -207,7 +207,7 @@ namespace AccessibilityMod.Services
                 // Check for play/pause changes
                 if (isPlaying && !_wasPlaying)
                 {
-                    ClipboardManager.Announce("Playing", TextType.Investigation);
+                    SpeechManager.Announce("Playing", TextType.Investigation);
                 }
                 else if (!isPlaying && _wasPlaying)
                 {
@@ -216,7 +216,7 @@ namespace AccessibilityMod.Services
                         targetCount > 0
                             ? $", {targetCount} target{(targetCount != 1 ? "s" : "")}"
                             : "";
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         $"Paused at frame {currentFrame}{targetInfo}",
                         TextType.Investigation
                     );
@@ -226,7 +226,7 @@ namespace AccessibilityMod.Services
                 int currentTargetCount = GetActiveTargetCount();
                 if (currentTargetCount > 0 && _lastTargetCount == 0)
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         $"Target available! Pause with Backspace.",
                         TextType.Investigation
                     );
@@ -245,7 +245,7 @@ namespace AccessibilityMod.Services
             _lastTargetCount = 0;
             _currentTargetIndex = -1;
 
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 "Video tape examination. Backspace to play/pause, Enter to fast forward, J to rewind, E to present. Press H for hint.",
                 TextType.Investigation
             );
@@ -264,7 +264,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                ClipboardManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
                 return;
             }
 
@@ -285,7 +285,7 @@ namespace AccessibilityMod.Services
                 targetInfo += $", cursor on target {targetNo + 1}";
             }
 
-            ClipboardManager.Announce(
+            SpeechManager.Announce(
                 $"{state}, frame {frame}. {targetInfo}.",
                 TextType.Investigation
             );
@@ -298,7 +298,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                ClipboardManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
                 return;
             }
 
@@ -348,7 +348,7 @@ namespace AccessibilityMod.Services
                     break;
             }
 
-            ClipboardManager.Announce(hint, TextType.Investigation);
+            SpeechManager.Announce(hint, TextType.Investigation);
         }
 
         /// <summary>
@@ -390,13 +390,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                ClipboardManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
                 return;
             }
 
             if (IsPlaying())
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Pause the video first with Backspace",
                     TextType.Investigation
                 );
@@ -409,7 +409,7 @@ namespace AccessibilityMod.Services
 
                 if (activeTargets.Count == 0)
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         "No targets available at this frame",
                         TextType.Investigation
                     );
@@ -438,13 +438,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                ClipboardManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
                 return;
             }
 
             if (IsPlaying())
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     "Pause the video first with Backspace",
                     TextType.Investigation
                 );
@@ -457,7 +457,7 @@ namespace AccessibilityMod.Services
 
                 if (activeTargets.Count == 0)
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         "No targets available at this frame",
                         TextType.Investigation
                     );
@@ -541,7 +541,7 @@ namespace AccessibilityMod.Services
             int collidedNo = cursor.GetCollidedNo();
             if (collidedNo < 4)
             {
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Target {index + 1} of {total}. Press E to present.",
                     TextType.Investigation
                 );
@@ -556,14 +556,14 @@ namespace AccessibilityMod.Services
                 collidedNo = cursor.GetCollidedNo();
                 if (collidedNo < 4)
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         $"Target {index + 1} of {total}. Press E to present.",
                         TextType.Investigation
                     );
                 }
                 else
                 {
-                    ClipboardManager.Announce(
+                    SpeechManager.Announce(
                         $"Target {index + 1} of {total}. Cursor positioned but may need adjustment. Use arrow keys to fine-tune, then E to present.",
                         TextType.Investigation
                     );

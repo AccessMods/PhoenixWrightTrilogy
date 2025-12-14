@@ -58,7 +58,7 @@ namespace AccessibilityMod.Patches
                         int buttonValue = ButtonLayout[cursorY, cursorX];
                         string buttonName = buttonValue == 10 ? "Back" : buttonValue.ToString();
 
-                        ClipboardManager.Announce(buttonName, TextType.Menu);
+                        SpeechManager.Announce(buttonName, TextType.Menu);
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace AccessibilityMod.Patches
         {
             _lastCursorX = -1;
             _lastCursorY = -1;
-            ClipboardManager.Announce("Safe keypad. Enter the 7-digit code.", TextType.Menu);
+            SpeechManager.Announce("Safe keypad. Enter the 7-digit code.", TextType.Menu);
         }
 
         /// <summary>
@@ -91,12 +91,12 @@ namespace AccessibilityMod.Patches
             {
                 if (num == 10)
                 {
-                    ClipboardManager.Announce("Deleted", TextType.Menu);
+                    SpeechManager.Announce("Deleted", TextType.Menu);
                 }
                 else
                 {
                     // Number entered - the game plays a sound, we just confirm
-                    ClipboardManager.Announce($"Entered {num}", TextType.Menu);
+                    SpeechManager.Announce($"Entered {num}", TextType.Menu);
                 }
             }
             catch

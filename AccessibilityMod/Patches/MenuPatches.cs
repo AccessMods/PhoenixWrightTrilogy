@@ -64,7 +64,7 @@ namespace AccessibilityMod.Patches
                 if (!Core.Net35Extensions.IsNullOrWhiteSpace(optionText))
                 {
                     string message = $"Main menu: {optionText}";
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -205,7 +205,7 @@ namespace AccessibilityMod.Patches
                 string optionText = GetTitleSelectPlateText(__instance, idx);
                 if (!Core.Net35Extensions.IsNullOrWhiteSpace(optionText))
                 {
-                    ClipboardManager.Announce(optionText, TextType.Menu);
+                    SpeechManager.Announce(optionText, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -298,7 +298,7 @@ namespace AccessibilityMod.Patches
                 _lastSeriesTitle = -1;
                 string message =
                     "Select game. Use left and right to choose game, then select Play Title or Select Episode.";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -324,7 +324,7 @@ namespace AccessibilityMod.Patches
 
                 _lastSeriesTitle = titleIndex;
                 string titleName = GetGameTitleName(title_id);
-                ClipboardManager.Announce(titleName, TextType.Menu);
+                SpeechManager.Announce(titleName, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -362,7 +362,7 @@ namespace AccessibilityMod.Patches
             {
                 _lastScenarioEpisode = -1;
                 string message = "Episode selection. Use left and right to choose episode.";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -395,7 +395,7 @@ namespace AccessibilityMod.Patches
                 _lastScenarioEpisode = currentNum;
 
                 string episodeName = GetScenarioEpisodeName(currentNum);
-                ClipboardManager.Announce(episodeName, TextType.Menu);
+                SpeechManager.Announce(episodeName, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -441,7 +441,7 @@ namespace AccessibilityMod.Patches
 
                 if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
                 {
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -503,7 +503,7 @@ namespace AccessibilityMod.Patches
             {
                 string message =
                     "Chapter selection. Use left and right to choose episode, up and down to choose chapter.";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -539,7 +539,7 @@ namespace AccessibilityMod.Patches
                     return;
 
                 string episodeName = $"Episode {position + 1}";
-                ClipboardManager.Announce(episodeName, TextType.Menu);
+                SpeechManager.Announce(episodeName, TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -560,7 +560,7 @@ namespace AccessibilityMod.Patches
                 string optionText = GetGeneralSelectOptionText(__instance, cursorNo);
                 if (!Core.Net35Extensions.IsNullOrWhiteSpace(optionText))
                 {
-                    ClipboardManager.Announce(optionText, TextType.Menu);
+                    SpeechManager.Announce(optionText, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -625,7 +625,7 @@ namespace AccessibilityMod.Patches
 
                 string currentOption = GetTanteiOption(__instance.cursor_no, in_type);
                 string message = $"Menu: {currentOption}";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
 
                 AccessibilityState.SetMode(AccessibilityState.GameMode.Menu);
             }
@@ -648,7 +648,7 @@ namespace AccessibilityMod.Patches
                 {
                     _lastTanteiCursor = __instance.cursor_no;
                     string option = GetTanteiOption(__instance.cursor_no, __instance.setting);
-                    ClipboardManager.Announce(option, TextType.Menu);
+                    SpeechManager.Announce(option, TextType.Menu);
                 }
             }
             catch (Exception ex)
@@ -762,7 +762,7 @@ namespace AccessibilityMod.Patches
                             currentOption,
                             __instance.cursor_no
                         );
-                        ClipboardManager.Announce(announcement, TextType.MenuChoice);
+                        SpeechManager.Announce(announcement, TextType.MenuChoice);
                     }
                 }
 

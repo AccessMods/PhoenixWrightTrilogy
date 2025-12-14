@@ -36,7 +36,7 @@ namespace AccessibilityMod.Patches
                 }
 
                 string message = $"Court Record: {tabName}. {itemCount} items.";
-                ClipboardManager.Announce(message, TextType.Menu);
+                SpeechManager.Announce(message, TextType.Menu);
 
                 // Reset tracking
                 _lastRecordCursor = -1;
@@ -79,7 +79,7 @@ namespace AccessibilityMod.Patches
                     }
 
                     string message = $"{tabName}. {itemCount} items.";
-                    ClipboardManager.Announce(message, TextType.Menu);
+                    SpeechManager.Announce(message, TextType.Menu);
                 }
 
                 _lastRecordType = recordType;
@@ -148,7 +148,7 @@ namespace AccessibilityMod.Patches
                     sb.Append(" - Press Enter for details");
                 }
 
-                ClipboardManager.Announce(sb.ToString(), TextType.Menu);
+                SpeechManager.Announce(sb.ToString(), TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -293,7 +293,7 @@ namespace AccessibilityMod.Patches
                 }
 
                 sb.Append(" Press Backspace to close.");
-                ClipboardManager.Announce(sb.ToString(), TextType.Menu);
+                SpeechManager.Announce(sb.ToString(), TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -333,7 +333,7 @@ namespace AccessibilityMod.Patches
                     sb.Append(description);
                 }
 
-                ClipboardManager.Announce(sb.ToString(), TextType.Menu);
+                SpeechManager.Announce(sb.ToString(), TextType.Menu);
             }
             catch (Exception ex)
             {

@@ -40,7 +40,7 @@ namespace AccessibilityMod.Patches
             {
                 // Still needs more sprays
                 int remaining = __instance.discovery_count_;
-                ClipboardManager.Announce(
+                SpeechManager.Announce(
                     $"Hit! {remaining} more spray{(remaining != 1 ? "s" : "")} needed.",
                     TextType.Investigation
                 );
@@ -48,7 +48,7 @@ namespace AccessibilityMod.Patches
             else if (__instance.state_ == BloodstainState.Discovery)
             {
                 // Full discovery - animation starting
-                ClipboardManager.Announce("Blood trace found!", TextType.Investigation);
+                SpeechManager.Announce("Blood trace found!", TextType.Investigation);
             }
         }
     }
