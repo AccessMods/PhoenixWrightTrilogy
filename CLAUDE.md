@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a screen reader accessibility mod for Phoenix Wright: Ace Attorney Trilogy using MelonLoader. The mod outputs game text (dialogue, menus, UI elements) to the clipboard for screen reader software to read aloud.
+This is a screen reader accessibility mod for Phoenix Wright: Ace Attorney Trilogy using MelonLoader. The mod outputs game text (dialogue, menus, UI elements) directly to screen readers via the UniversalSpeech library, with SAPI fallback for users without a screen reader.
 
 ## Build Commands
 
@@ -22,15 +22,17 @@ dotnet build -c Release
 - **GamePath**: `C:\Program Files (x86)\Steam\steamapps\common\Phoenix Wright Ace Attorney Trilogy`
 - **MelonLoader References**: Use `net35` folder, not `net6`
 - **UserData Config**: Runtime overrides in `$(GamePath)\UserData\AccessibilityMod\`
+- **UniversalSpeech**: Requires `UniversalSpeech.dll` (32-bit) in the game directory for screen reader output
 
 ## Architecture
 
 ### Core Components
 
 - **AccessibilityMod.Core.AccessibilityMod**: Main MelonMod entry point. Handles initialization and keyboard input via `OnUpdate()`
-- **ClipboardManager**: Queue-based text output system with duplicate prevention. Uses `CoroutineRunner` to write to `GUIUtility.systemCopyBuffer`
+- **SpeechManager**: Screen reader output via UniversalSpeech library (P/Invoke). Provides `Output()`, `Announce()`, `RepeatLast()` methods with duplicate prevention. Falls back to SAPI if no screen reader is running.
 - **Net35Extensions**: Polyfills for .NET 3.5 compatibility (`IsNullOrWhiteSpace`, etc.)
 - **TextCleaner**: Strips formatting tags and normalizes text for screen reader output
+- **CoroutineRunner**: MonoBehaviour singleton for menu cursor tracking and delayed announcements
 
 ### Keyboard Shortcuts
 
