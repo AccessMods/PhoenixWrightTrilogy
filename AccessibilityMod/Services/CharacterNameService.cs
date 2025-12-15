@@ -34,138 +34,6 @@ namespace AccessibilityMod.Services
             get { return LocalizationService.GetEnglishFolder(); }
         }
 
-        // GS1 sprite index to character name mapping
-        // Verified from GalleryActionStudioCtrl.CHARACTER_TABLE
-        private static readonly Dictionary<int, string> GS1_NAMES = new Dictionary<int, string>
-        {
-            { 2, "Phoenix Wright" },
-            { 3, "Police Officer" },
-            { 4, "Maya Fey" },
-            { 5, "Mia Fey" }, // Channeled by Maya
-            { 7, "Mia Fey" },
-            { 8, "Judge" },
-            { 9, "Miles Edgeworth" },
-            { 10, "Winston Payne" },
-            { 11, "Interphone" },
-            { 12, "Marvin Grossberg" },
-            { 13, "Phone" },
-            { 16, "Penny Nichols" },
-            { 17, "Wendy Oldbag" },
-            { 18, "Sal Manella" },
-            { 20, "Dick Gumshoe" },
-            { 21, "Redd White" },
-            { 22, "April May" },
-            { 23, "Bellboy" },
-            { 24, "Dee Vasquez" },
-            { 25, "Larry Butz" },
-            { 26, "Frank Sahwit" },
-            { 27, "Will Powers" },
-            { 28, "Cody Hackins" },
-            { 31, "Lotta Hart" },
-            { 32, "Yanni Yogi" },
-            { 33, "Manfred von Karma" },
-            { 34, "Polly" },
-            { 36, "Caretaker" },
-            { 37, "Bailiff" },
-            { 38, "Teacher" },
-            { 39, "Miles Edgeworth" },
-            { 43, "Chief of Detectives" },
-            { 44, "Ema Skye" },
-            { 45, "Lana Skye" },
-            { 46, "Jake Marshall" },
-            { 47, "Mike Meekins" },
-            { 48, "Bruce Goodman" },
-            { 49, "Damon Gant" },
-            { 50, "Angel Starr" },
-            { 52, "Police Officer" },
-            { 53, "Police Patrolman" },
-        };
-
-        // GS2 sprite index to character name mapping
-        private static readonly Dictionary<int, string> GS2_NAMES = new Dictionary<int, string>
-        {
-            { 3, "Phoenix Wright" },
-            { 4, "Maya Fey" },
-            { 6, "Mia Fey" },
-            { 7, "Judge" },
-            { 8, "Miles Edgeworth" },
-            { 9, "Winston Payne" },
-            { 10, "Dick Gumshoe" },
-            { 11, "Phone" },
-            { 13, "Bailiff" },
-            { 14, "Franziska von Karma" },
-            { 15, "Franziska von Karma" },
-            { 16, "Richard Wellington" },
-            { 17, "Maggey Byrde" },
-            { 19, "Ini Miney" },
-            { 20, "Pearl Fey" },
-            { 21, "Morgan Fey" },
-            { 22, "Director Hotti" },
-            { 23, "Turner Grey" },
-            { 24, "Lotta Hart" },
-            { 26, "Nurse" },
-            { 27, "Mimi Miney" },
-            { 28, "Regina Berry" },
-            { 29, "Max" },
-            { 30, "Ben" },
-            { 31, "Moe" },
-            { 32, "Acro" },
-            { 33, "Trilo" },
-            { 34, "Money the Monkey" },
-            { 35, "Matt Engarde" },
-            { 36, "Adrian Andrews" },
-            { 37, "Shelly de Killer" },
-            { 39, "Wendy Oldbag" },
-            { 40, "Will Powers" },
-            { 46, "Russell Berry" },
-            { 47, "Bellboy" },
-            { 48, "PA Notice" },
-            { 50, "Chief" },
-            { 52, "Guard" },
-            { 53, "Shoe" },
-            { 54, "John Doe" },
-        };
-
-        // GS3 raw speaker IDs from message_work.speaker_id
-        // These are the unique identifiers for each character, NOT the sprite indices
-        private static readonly Dictionary<int, string> GS3_NAMES = new Dictionary<int, string>
-        {
-            { 3, "Phoenix Wright" },
-            { 4, "Maya Fey" },
-            { 5, "Judge" },
-            { 6, "Dick Gumshoe" },
-            { 7, "Mia Fey" },
-            { 9, "Winston Payne" },
-            { 11, "Dahlia Hawthorne" },
-            { 12, "Ron DeLite" },
-            { 13, "Luke Atmey" },
-            { 14, "Desirée DeLite" },
-            { 15, "Larry Butz" },
-            { 16, "Adrian Andrews" },
-            { 17, "Godot" },
-            { 18, "Maggey Byrde" },
-            { 19, "Jean Armstrong" },
-            { 20, "Furio Tigre" },
-            { 21, "Viola" },
-            { 23, "Victor Kudo" },
-            { 24, "Lisa Basil" },
-            { 27, "Terry Fawles" },
-            { 30, "Pearl Fey" },
-            { 42, "Marvin Grossberg" },
-            { 47, "Phone" },
-            { 48, "Bailiff" },
-            { 49, "Canadian Judge" },
-            { 50, "Doug Swallow" },
-            { 51, "Announcer" },
-            { 52, "Mask☆DeMasque" },
-            { 54, "Buzzer" },
-            { 58, "Old Man" },
-            { 59, "Chief" },
-            { 60, "Detective" },
-            { 61, "The Tiger" },
-            { 62, "Programmer" },
-        };
-
         public static void Initialize()
         {
             if (_initialized)
@@ -378,36 +246,26 @@ namespace AccessibilityMod.Services
             {
                 string name = "";
 
-                // Get override dictionary and default dictionary for current game
-                Dictionary<int, string> overrideDict = null;
+                // Get dictionary for current game
                 Dictionary<int, string> nameDict = null;
                 switch (currentGame)
                 {
                     case TitleId.GS1:
-                        overrideDict = _gs1Overrides;
-                        nameDict = GS1_NAMES;
+                        nameDict = _gs1Overrides;
                         break;
                     case TitleId.GS2:
-                        overrideDict = _gs2Overrides;
-                        nameDict = GS2_NAMES;
+                        nameDict = _gs2Overrides;
                         break;
                     case TitleId.GS3:
-                        overrideDict = _gs3Overrides;
-                        nameDict = GS3_NAMES;
+                        nameDict = _gs3Overrides;
                         break;
                     default:
-                        overrideDict = _gs1Overrides;
-                        nameDict = GS1_NAMES;
+                        nameDict = _gs1Overrides;
                         break;
                 }
 
-                // Check overrides first (from external JSON files)
-                if (overrideDict != null && overrideDict.ContainsKey(spriteId))
-                {
-                    name = overrideDict[spriteId];
-                }
-                // Fall back to hardcoded defaults
-                else if (nameDict != null && nameDict.ContainsKey(spriteId))
+                // Look up name from JSON files
+                if (nameDict != null && nameDict.ContainsKey(spriteId))
                 {
                     name = nameDict[spriteId];
                 }
@@ -415,7 +273,7 @@ namespace AccessibilityMod.Services
                 {
                     // Log unknown speaker IDs
                     AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
-                        $"{currentGame} sprite ID {spriteId} - add {{ {spriteId}, \"NAME\" }} to {currentGame}_NAMES"
+                        $"{currentGame} sprite ID {spriteId} - add \"{spriteId}\": \"NAME\" to {currentGame}_Names.json"
                     );
                     name = $"Speaker {spriteId}";
                 }

@@ -298,64 +298,7 @@ Press F5 in-game to reload after making changes.
             return pages.ToArray();
         }
 
-        // GS1 evidence detail descriptions, keyed by detail_id (index into status_ext_bg_tbl)
-        private static readonly Dictionary<int, DetailDescription> GS1_DETAILS = new Dictionary<
-            int,
-            DetailDescription
-        >
-        {
-            {
-                2,
-                new DetailDescription(
-                    @"[September 5, 9:27 AM]
-Maya: Mia! What's up? You haven't called in a while.
-Mia: Well, actually there's something I want you to hold on to for me.
-Maya: Again? What is it this time?",
-                    @"Mia: It's... a clock. It's made to look like that statue, ""The Thinker."" And it tells you the time! Ah... I should probably tell you, the clock isn't talking right now.
-Maya: Huh? It's not working? That's lame!",
-                    @"Mia: I had to take the clockwork out, sorry. I put some papers inside it instead.
-Maya: Papers? Is that the evidence, then?
-Mia: I'll leave that one up to your imagination. See you tonight at nine."
-                )
-            },
-            {
-                9,
-                new DetailDescription(
-                    @"Case Summary:
-12/28, 2001
-Elevator, District Court.
-Air in elevator was oxygen depleted at time of incident.
-No clues found on the scene.",
-                    @"Victim Data:
-Gregory Edgeworth (Age 35)
-Defense attorney. Trapped in elevator returning from a lost trial with son Miles (Age 9).
-One bullet found in heart. The murder weapon was fired twice.",
-                    @"Suspect Data:
-Yanni Yogi (Age 37)
-Court bailiff, trapped with the Edgeworths. Memory loss due to oxygen deprivation.
-After his arrest, fiancee Polly Jenkins committed suicide."
-                )
-            },
-        };
-
-        // GS2 evidence detail descriptions
-        private static readonly Dictionary<int, DetailDescription> GS2_DETAILS = new Dictionary<
-            int,
-            DetailDescription
-        >
-        { };
-
-        // GS3 evidence detail descriptions
-        private static readonly Dictionary<int, DetailDescription> GS3_DETAILS = new Dictionary<
-            int,
-            DetailDescription
-        >
-        { };
-
-        private static void GetDictionaries(
-            out Dictionary<int, DetailDescription> overrideDict,
-            out Dictionary<int, DetailDescription> detailDict
-        )
+        private static Dictionary<int, DetailDescription> GetDictionary()
         {
             if (!_initialized)
                 Initialize();
@@ -373,21 +316,13 @@ After his arrest, fiancee Polly Jenkins committed suicide."
             switch (currentGame)
             {
                 case TitleId.GS1:
-                    overrideDict = _gs1Overrides;
-                    detailDict = GS1_DETAILS;
-                    break;
+                    return _gs1Overrides;
                 case TitleId.GS2:
-                    overrideDict = _gs2Overrides;
-                    detailDict = GS2_DETAILS;
-                    break;
+                    return _gs2Overrides;
                 case TitleId.GS3:
-                    overrideDict = _gs3Overrides;
-                    detailDict = GS3_DETAILS;
-                    break;
+                    return _gs3Overrides;
                 default:
-                    overrideDict = _gs1Overrides;
-                    detailDict = GS1_DETAILS;
-                    break;
+                    return _gs1Overrides;
             }
         }
 
@@ -401,20 +336,10 @@ After his arrest, fiancee Polly Jenkins committed suicide."
         {
             try
             {
-                Dictionary<int, DetailDescription> overrideDict;
-                Dictionary<int, DetailDescription> detailDict;
-                GetDictionaries(out overrideDict, out detailDict);
-
-                // Check overrides first
-                if (overrideDict != null && overrideDict.ContainsKey(detailId))
+                var dict = GetDictionary();
+                if (dict != null && dict.ContainsKey(detailId))
                 {
-                    return overrideDict[detailId].GetPage(pageIndex);
-                }
-
-                // Fall back to defaults
-                if (detailDict != null && detailDict.ContainsKey(detailId))
-                {
-                    return detailDict[detailId].GetPage(pageIndex);
+                    return dict[detailId].GetPage(pageIndex);
                 }
             }
             catch (Exception ex)
@@ -434,12 +359,8 @@ After his arrest, fiancee Polly Jenkins committed suicide."
         {
             try
             {
-                Dictionary<int, DetailDescription> overrideDict;
-                Dictionary<int, DetailDescription> detailDict;
-                GetDictionaries(out overrideDict, out detailDict);
-
-                return (overrideDict != null && overrideDict.ContainsKey(detailId))
-                    || (detailDict != null && detailDict.ContainsKey(detailId));
+                var dict = GetDictionary();
+                return dict != null && dict.ContainsKey(detailId);
             }
             catch
             {
@@ -454,20 +375,10 @@ After his arrest, fiancee Polly Jenkins committed suicide."
         {
             try
             {
-                Dictionary<int, DetailDescription> overrideDict;
-                Dictionary<int, DetailDescription> detailDict;
-                GetDictionaries(out overrideDict, out detailDict);
-
-                // Check overrides first
-                if (overrideDict != null && overrideDict.ContainsKey(detailId))
+                var dict = GetDictionary();
+                if (dict != null && dict.ContainsKey(detailId))
                 {
-                    return overrideDict[detailId].PageCount;
-                }
-
-                // Fall back to defaults
-                if (detailDict != null && detailDict.ContainsKey(detailId))
-                {
-                    return detailDict[detailId].PageCount;
+                    return dict[detailId].PageCount;
                 }
             }
             catch { }
