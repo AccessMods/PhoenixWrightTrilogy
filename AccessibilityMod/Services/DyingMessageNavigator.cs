@@ -106,7 +106,7 @@ namespace AccessibilityMod.Services
             _dotCount = GetDotCount();
 
             SpeechManager.Announce(
-                $"Dying message puzzle. {_dotCount} dots. Connect dots to spell EMA. Use [ and ] to navigate dots, Enter on a dot to start a line, Enter on another dot to connect. Q to undo last line. Press H for hint.",
+                L.Get("dying_message.puzzle_start", _dotCount),
                 TextType.Investigation
             );
         }
@@ -148,7 +148,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("dying_message.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -167,7 +167,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("dying_message.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -229,7 +229,7 @@ namespace AccessibilityMod.Services
                 // Announce the dot
                 string description = GetDotDescription(_currentDotIndex);
                 SpeechManager.Announce(
-                    $"Dot {_currentDotIndex + 1}: {description}",
+                    L.Get("dying_message.dot_description", _currentDotIndex + 1, description),
                     TextType.Investigation
                 );
             }
@@ -255,18 +255,18 @@ namespace AccessibilityMod.Services
                     case Language.CHINA_T:
                     case Language.KOREA:
                         // For non-English, just return position
-                        return $"position {index + 1}";
+                        return L.Get("dying_message.position", index + 1);
                     default:
                         if (index >= 0 && index < DotDescriptions_US.Length)
                         {
                             return DotDescriptions_US[index];
                         }
-                        return $"position {index + 1}";
+                        return L.Get("dying_message.position", index + 1);
                 }
             }
             catch
             {
-                return $"position {index + 1}";
+                return L.Get("dying_message.position", index + 1);
             }
         }
 
@@ -277,7 +277,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("dying_message.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -310,8 +310,7 @@ namespace AccessibilityMod.Services
                     case Language.CHINA_S:
                     case Language.CHINA_T:
                     case Language.KOREA:
-                        hint =
-                            $"{lineCount} lines drawn. Connect dots to form the correct pattern.";
+                        hint = L.Get("dying_message.hint_lines_drawn", lineCount);
                         break;
                     default:
                         // English hint
@@ -324,7 +323,7 @@ namespace AccessibilityMod.Services
             catch
             {
                 SpeechManager.Announce(
-                    "Connect the dots to spell EMA. For E: connect 1-2, 1-6, 6-7. For M: connect 3-4, 3-10. For A: connect 5-8, 5-9, 8-9.",
+                    L.Get("dying_message.hint_fallback"),
                     TextType.Investigation
                 );
             }
@@ -334,19 +333,19 @@ namespace AccessibilityMod.Services
         {
             if (lineCount == 0)
             {
-                return "Spell EMA by connecting dots. Start with E: connect dot 1 (E top-left) to dot 2 (E top-right), then dot 1 to dot 6 (E bottom-left).";
+                return L.Get("dying_message.hint_start");
             }
             else if (lineCount < 3)
             {
-                return "Continue E: connect dot 6 (E bottom-left) to dot 7 (E bottom-right). Then start M: connect dot 3 (M top-right) to dot 4 (M middle-left) and to dot 10 (M bottom).";
+                return L.Get("dying_message.hint_continue_e");
             }
             else if (lineCount < 6)
             {
-                return "Now draw A: connect dot 5 (A top) to dot 11 (A bottom-left), dot 5 to dot 12 (A bottomright), and dot 8 to dot 9 for the crossbar.";
+                return L.Get("dying_message.hint_draw_a");
             }
             else
             {
-                return $"{lineCount} lines drawn. Press E to present when done, or Q to undo last line.";
+                return L.Get("dying_message.hint_done", lineCount);
             }
         }
 
@@ -357,7 +356,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsActive())
             {
-                SpeechManager.Announce("Not in dying message mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("dying_message.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -369,7 +368,7 @@ namespace AccessibilityMod.Services
                     BindingFlags.NonPublic | BindingFlags.Instance
                 );
 
-                string stateStr = "ready";
+                string stateStr = L.Get("dying_message.state_ready");
                 if (stateField != null && DyingMessageUtil.instance != null)
                 {
                     var state = stateField.GetValue(DyingMessageUtil.instance);
@@ -384,11 +383,15 @@ namespace AccessibilityMod.Services
                         {
                             int startIndex = (int)startField.GetValue(DyingMessageUtil.instance);
                             string startDesc = GetDotDescription(startIndex);
-                            stateStr = $"drawing line from dot {startIndex + 1} ({startDesc})";
+                            stateStr = L.Get(
+                                "dying_message.state_drawing_from",
+                                startIndex + 1,
+                                startDesc
+                            );
                         }
                         else
                         {
-                            stateStr = "drawing line";
+                            stateStr = L.Get("dying_message.state_drawing");
                         }
                     }
                 }
@@ -415,19 +418,18 @@ namespace AccessibilityMod.Services
 
                 int count = GetDotCount();
                 string locationInfo =
-                    _currentDotIndex >= 0 ? $"At dot {_currentDotIndex + 1} of {count}. " : "";
+                    _currentDotIndex >= 0
+                        ? L.Get("dying_message.state_at_dot", _currentDotIndex + 1, count)
+                        : "";
 
                 SpeechManager.Announce(
-                    $"Dying message. {locationInfo}{lineCount} line{(lineCount != 1 ? "s" : "")} drawn. Status: {stateStr}. Press H for hint.",
+                    L.Get("dying_message.state", locationInfo, lineCount, stateStr),
                     TextType.Investigation
                 );
             }
             catch
             {
-                SpeechManager.Announce(
-                    "Dying message puzzle. Use [ and ] to navigate dots, Enter to connect, Q to undo, E to present.",
-                    TextType.Investigation
-                );
+                SpeechManager.Announce(L.Get("dying_message.hint_generic"), TextType.Investigation);
             }
         }
 
@@ -439,7 +441,7 @@ namespace AccessibilityMod.Services
             string fromDesc = GetDotDescription(from);
             string toDesc = GetDotDescription(to);
             SpeechManager.Announce(
-                $"Connected dot {from + 1} ({fromDesc}) to dot {to + 1} ({toDesc})",
+                L.Get("dying_message.connected", from + 1, fromDesc, to + 1, toDesc),
                 TextType.Investigation
             );
         }
@@ -449,7 +451,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         public static void OnLineDeleted()
         {
-            SpeechManager.Announce("Line removed", TextType.Investigation);
+            SpeechManager.Announce(L.Get("dying_message.line_removed"), TextType.Investigation);
         }
 
         /// <summary>
@@ -459,7 +461,7 @@ namespace AccessibilityMod.Services
         {
             string desc = GetDotDescription(dotIndex);
             SpeechManager.Announce(
-                $"Line started from dot {dotIndex + 1} ({desc}). Navigate to another dot and press Enter to connect.",
+                L.Get("dying_message.line_started", dotIndex + 1, desc),
                 TextType.Investigation
             );
         }
@@ -469,7 +471,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         public static void OnLineCancelled()
         {
-            SpeechManager.Announce("Line cancelled", TextType.Investigation);
+            SpeechManager.Announce(L.Get("dying_message.line_cancelled"), TextType.Investigation);
         }
     }
 }

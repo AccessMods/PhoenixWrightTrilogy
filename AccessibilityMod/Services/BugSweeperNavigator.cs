@@ -138,8 +138,8 @@ namespace AccessibilityMod.Services
             if (IsScrollableBackground())
             {
                 int targetCount = GetCurrentSideTargetCount();
-                string side = IsOnRightSide() ? "right" : "left";
-                targetInfo = $" {targetCount} targets on {side} side.";
+                string side = IsOnRightSide() ? L.Get("position.right") : L.Get("position.left");
+                targetInfo = L.Get("bug_sweeper.targets_on_side", targetCount, side);
             }
             else
             {
@@ -147,12 +147,16 @@ namespace AccessibilityMod.Services
                     TanchikiMiniGame.find_target != null
                         ? TanchikiMiniGame.find_target.Length - 1
                         : 0;
-                targetInfo = $" {totalTargets} targets to find.";
+                targetInfo = L.Get("bug_sweeper.targets_to_find", totalTargets);
             }
 
-            string scrollHint = IsScrollableBackground() ? " Press Q to pan left/right." : "";
+            string scrollHint = IsScrollableBackground() ? L.Get("bug_sweeper.pan_hint") : "";
             string message =
-                $"Bug sweeper mode.{targetInfo} Move cursor to scan for listening devices.{scrollHint}";
+                L.Get("mode.bug_sweeper")
+                + "."
+                + targetInfo
+                + " Move cursor to scan for listening devices."
+                + scrollHint;
             SpeechManager.Announce(message, TextType.Investigation);
         }
 
@@ -358,17 +362,17 @@ namespace AccessibilityMod.Services
             switch (level)
             {
                 case 1:
-                    return "Very weak signal";
+                    return L.Get("bug_sweeper.signal_very_weak");
                 case 2:
-                    return "Weak signal";
+                    return L.Get("bug_sweeper.signal_weak");
                 case 3:
-                    return "Moderate signal";
+                    return L.Get("bug_sweeper.signal_moderate");
                 case 4:
-                    return "Strong signal";
+                    return L.Get("bug_sweeper.signal_strong");
                 case 5:
-                    return "Target found";
+                    return L.Get("bug_sweeper.target_found");
                 default:
-                    return "No signal";
+                    return L.Get("bug_sweeper.signal_none");
             }
         }
 
@@ -380,11 +384,17 @@ namespace AccessibilityMod.Services
             bool isChecked = IsTargetChecked(targetIndex);
             if (isChecked)
             {
-                SpeechManager.Announce("Already checked.", TextType.Investigation);
+                SpeechManager.Announce(
+                    L.Get("bug_sweeper.already_checked"),
+                    TextType.Investigation
+                );
             }
             else
             {
-                SpeechManager.Announce("Press Enter to check.", TextType.Investigation);
+                SpeechManager.Announce(
+                    L.Get("bug_sweeper.press_enter_check"),
+                    TextType.Investigation
+                );
             }
         }
 
@@ -460,7 +470,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsBugSweeperActive())
             {
-                SpeechManager.Announce("Not in bug sweeper mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("bug_sweeper.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -476,17 +486,22 @@ namespace AccessibilityMod.Services
             string checkedInfo;
             if (IsScrollableBackground())
             {
-                string side = IsOnRightSide() ? "right" : "left";
-                checkedInfo = $"Checked {checkedCount} of {totalCount} targets on {side} side.";
+                string side = IsOnRightSide() ? L.Get("position.right") : L.Get("position.left");
+                checkedInfo = L.Get(
+                    "bug_sweeper.checked_x_of_y_side",
+                    checkedCount,
+                    totalCount,
+                    side
+                );
             }
             else
             {
-                checkedInfo = $"Checked {checkedCount} of {totalCount} targets.";
+                checkedInfo = L.Get("bug_sweeper.checked_x_of_y", checkedCount, totalCount);
             }
 
-            string scrollHint = IsScrollableBackground() ? " Press Q to pan." : "";
+            string scrollHint = IsScrollableBackground() ? " " + L.Get("luminol.pan_hint") : "";
 
-            string message = $"Bug sweeper mode. {levelDesc}. {checkedInfo}{scrollHint}";
+            string message = L.Get("bug_sweeper.state", levelDesc, checkedInfo, scrollHint);
             SpeechManager.Announce(message, TextType.Investigation);
         }
 

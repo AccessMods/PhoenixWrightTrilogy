@@ -83,15 +83,18 @@ namespace AccessibilityMod.Patches
                 {
                     _lastHealth = percentage;
 
-                    string message = $"Health: {percentage} percent";
-
-                    if (percentage <= 20)
+                    string message;
+                    if (percentage <= 0)
                     {
-                        message += " - DANGER!";
+                        message = L.Get("trial.game_over");
                     }
-                    else if (percentage <= 0)
+                    else if (percentage <= 20)
                     {
-                        message = "Game Over!";
+                        message = L.Get("trial.life_gauge_danger", percentage);
+                    }
+                    else
+                    {
+                        message = L.Get("trial.health_percent", percentage);
                     }
 
                     SpeechManager.Announce(message, TextType.Trial);

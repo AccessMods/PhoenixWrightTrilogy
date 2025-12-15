@@ -127,13 +127,13 @@ namespace AccessibilityMod.Services
         {
             // Assuming 1920x1080 resolution
             string horizontal =
-                x < 640 ? "left"
-                : x > 1280 ? "right"
-                : "center";
+                x < 640 ? L.Get("position.left")
+                : x > 1280 ? L.Get("position.right")
+                : L.Get("position.center");
             string vertical =
-                y < 360 ? "top"
-                : y > 720 ? "bottom"
-                : "middle";
+                y < 360 ? L.Get("position.top")
+                : y > 720 ? L.Get("position.bottom")
+                : L.Get("position.middle");
             return $"{vertical} {horizontal}";
         }
 
@@ -146,7 +146,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No points of interest found", TextType.Investigation);
+                SpeechManager.Announce(L.Get("navigation.no_points"), TextType.Investigation);
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No points of interest found", TextType.Investigation);
+                SpeechManager.Announce(L.Get("navigation.no_points"), TextType.Investigation);
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace AccessibilityMod.Services
 
             if (unexamined.Count == 0)
             {
-                SpeechManager.Announce("All points examined", TextType.Investigation);
+                SpeechManager.Announce(L.Get("navigation.all_examined"), TextType.Investigation);
                 return;
             }
 
@@ -205,7 +205,7 @@ namespace AccessibilityMod.Services
                 }
             }
 
-            SpeechManager.Announce("All points examined", TextType.Investigation);
+            SpeechManager.Announce(L.Get("navigation.all_examined"), TextType.Investigation);
         }
 
         private static void RefreshExaminedStatus()
@@ -225,7 +225,10 @@ namespace AccessibilityMod.Services
         {
             if (_hotspots.Count == 0 || _currentIndex >= _hotspots.Count)
             {
-                SpeechManager.Announce("No point selected", TextType.Investigation);
+                SpeechManager.Announce(
+                    L.Get("navigation.no_point_selected"),
+                    TextType.Investigation
+                );
                 return;
             }
 
@@ -247,7 +250,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No points of interest", TextType.Investigation);
+                SpeechManager.Announce(L.Get("navigation.no_points"), TextType.Investigation);
                 return;
             }
 
@@ -255,7 +258,8 @@ namespace AccessibilityMod.Services
             int unexamined = _hotspots.Count - examined;
 
             string summary =
-                $"{_hotspots.Count} points of interest. {examined} examined, {unexamined} remaining.";
+                L.Get("navigation.x_points", _hotspots.Count)
+                + $". {examined} examined, {unexamined} remaining.";
 
             // List unexamined ones
             var unexaminedList = _hotspots.Where(h => !h.IsExamined).ToList();

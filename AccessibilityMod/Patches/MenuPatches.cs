@@ -63,7 +63,7 @@ namespace AccessibilityMod.Patches
                 string optionText = GetMainMenuOptionText(mainTitle, __instance.cursor_no);
                 if (!Core.Net35Extensions.IsNullOrWhiteSpace(optionText))
                 {
-                    string message = $"Main menu: {optionText}";
+                    string message = L.Get("menu.main_menu", optionText);
                     SpeechManager.Announce(message, TextType.Menu);
                 }
             }
@@ -278,8 +278,7 @@ namespace AccessibilityMod.Patches
             try
             {
                 _lastSeriesTitle = -1;
-                string message =
-                    "Select game. Use left and right to choose game, then select Play Title or Select Episode.";
+                string message = L.Get("menu.select_game");
                 SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
@@ -321,13 +320,13 @@ namespace AccessibilityMod.Patches
             switch (titleId)
             {
                 case TitleId.GS1:
-                    return "Phoenix Wright: Ace Attorney";
+                    return L.Get("menu.game_title.gs1");
                 case TitleId.GS2:
-                    return "Phoenix Wright: Ace Attorney - Justice for All";
+                    return L.Get("menu.game_title.gs2");
                 case TitleId.GS3:
-                    return "Phoenix Wright: Ace Attorney - Trials and Tribulations";
+                    return L.Get("menu.game_title.gs3");
                 default:
-                    return $"Game {(int)titleId + 1}";
+                    return L.Get("menu.game_x", (int)titleId + 1);
             }
         }
 
@@ -343,7 +342,7 @@ namespace AccessibilityMod.Patches
             try
             {
                 _lastScenarioEpisode = -1;
-                string message = "Episode selection. Use left and right to choose episode.";
+                string message = L.Get("menu.episode_selection");
                 SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
@@ -483,8 +482,7 @@ namespace AccessibilityMod.Patches
         {
             try
             {
-                string message =
-                    "Chapter selection. Use left and right to choose episode, up and down to choose chapter.";
+                string message = L.Get("menu.chapter_selection");
                 SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
@@ -520,7 +518,7 @@ namespace AccessibilityMod.Patches
                 if (nameTable == null || position < 0 || position >= nameTable.Count)
                     return;
 
-                string episodeName = $"Episode {position + 1}";
+                string episodeName = L.Get("menu.episode_x", position + 1);
                 SpeechManager.Announce(episodeName, TextType.Menu);
             }
             catch (Exception ex)
@@ -606,7 +604,7 @@ namespace AccessibilityMod.Patches
                 _lastTanteiCursor = __instance.cursor_no;
 
                 string currentOption = GetTanteiOption(__instance.cursor_no, in_type);
-                string message = $"Menu: {currentOption}";
+                string message = L.Get("menu.menu", currentOption);
                 SpeechManager.Announce(message, TextType.Menu);
 
                 AccessibilityState.SetMode(AccessibilityState.GameMode.Menu);
@@ -654,7 +652,7 @@ namespace AccessibilityMod.Patches
                 if (cursorNo >= 0 && cursorNo < 4)
                     return _tanteiMenuOptions[cursorNo];
             }
-            return "Unknown";
+            return L.Get("menu.unknown");
         }
 
         #endregion
@@ -817,12 +815,12 @@ namespace AccessibilityMod.Patches
             if (hasPsyLock)
             {
                 // Topic has a psyche-lock (secret that needs to be unlocked)
-                return $"{optionText} (locked)";
+                return optionText + " " + L.Get("psyche_lock.topic_locked");
             }
             else if (isRead)
             {
                 // Topic has been discussed (checkmark)
-                return $"{optionText} (discussed)";
+                return optionText + " " + L.Get("psyche_lock.topic_discussed");
             }
 
             return optionText;

@@ -24,10 +24,14 @@ namespace AccessibilityMod.Services
         {
             get
             {
-                // MelonLoader UserData folder is in the game directory
-                string gameDir = AppDomain.CurrentDomain.BaseDirectory;
-                return Path.Combine(Path.Combine(gameDir, "UserData"), "AccessibilityMod");
+                // Use localized folder path
+                return LocalizationService.GetLanguageFolder();
             }
+        }
+
+        private static string EnglishConfigFolder
+        {
+            get { return LocalizationService.GetEnglishFolder(); }
         }
 
         // GS1 sprite index to character name mapping
@@ -194,20 +198,36 @@ namespace AccessibilityMod.Services
             try
             {
                 string folder = ConfigFolder;
+                string englishFolder = EnglishConfigFolder;
 
-                // Create folder if needed
-                if (!Directory.Exists(folder))
+                // Create English folder structure if needed (as the base/fallback)
+                if (!Directory.Exists(englishFolder))
                 {
-                    Directory.CreateDirectory(folder);
+                    Directory.CreateDirectory(englishFolder);
                 }
 
-                // Create sample files if they don't exist
-                CreateSampleConfigFilesIfMissing(folder);
+                // Create sample files in English folder if they don't exist
+                CreateSampleConfigFilesIfMissing(englishFolder);
 
-                // Load override files
-                LoadOverrideFile(Path.Combine(folder, "GS1_Names.json"), _gs1Overrides);
-                LoadOverrideFile(Path.Combine(folder, "GS2_Names.json"), _gs2Overrides);
-                LoadOverrideFile(Path.Combine(folder, "GS3_Names.json"), _gs3Overrides);
+                // Load override files with fallback to English
+                LoadOverrideFileWithFallback(
+                    "GS1_Names.json",
+                    folder,
+                    englishFolder,
+                    _gs1Overrides
+                );
+                LoadOverrideFileWithFallback(
+                    "GS2_Names.json",
+                    folder,
+                    englishFolder,
+                    _gs2Overrides
+                );
+                LoadOverrideFileWithFallback(
+                    "GS3_Names.json",
+                    folder,
+                    englishFolder,
+                    _gs3Overrides
+                );
 
                 int totalOverrides =
                     _gs1Overrides.Count + _gs2Overrides.Count + _gs3Overrides.Count;
@@ -223,6 +243,29 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Warning(
                     $"Error loading character name overrides: {ex.Message}"
                 );
+            }
+        }
+
+        private static void LoadOverrideFileWithFallback(
+            string fileName,
+            string primaryFolder,
+            string fallbackFolder,
+            Dictionary<int, string> target
+        )
+        {
+            // Try primary (current language) folder first
+            string primaryPath = Path.Combine(primaryFolder, fileName);
+            if (File.Exists(primaryPath))
+            {
+                LoadOverrideFile(primaryPath, target);
+                return;
+            }
+
+            // Fall back to English folder
+            string fallbackPath = Path.Combine(fallbackFolder, fileName);
+            if (File.Exists(fallbackPath))
+            {
+                LoadOverrideFile(fallbackPath, target);
             }
         }
 

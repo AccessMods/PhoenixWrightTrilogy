@@ -105,15 +105,20 @@ namespace AccessibilityMod.Services
                         undiscoveredCount++;
                 }
 
-                string scrollHint = IsScrollableBackground() ? " Press Q to pan left/right." : "";
+                string scrollHint = IsScrollableBackground() ? " " + L.Get("luminol.pan_hint") : "";
                 string message =
-                    $"Luminol spray mode. {undiscoveredCount} blood trace{(undiscoveredCount != 1 ? "s" : "")} to find. Use [ and ] to navigate, Enter to spray.{scrollHint}";
+                    L.Get("luminol.mode_entry", undiscoveredCount)
+                    + " "
+                    + L.Get("navigation.use_brackets_navigate")
+                    + ", Enter to spray."
+                    + scrollHint;
                 SpeechManager.Announce(message, TextType.Investigation);
             }
             else
             {
                 SpeechManager.Announce(
-                    "Luminol spray mode. Use arrow keys to move cursor, Enter to spray, B to exit.",
+                    L.Get("mode.luminol")
+                        + ". Use arrow keys to move cursor, Enter to spray, B to exit.",
                     TextType.Investigation
                 );
             }
@@ -225,9 +230,13 @@ namespace AccessibilityMod.Services
                     string sideDesc = "";
                     if (IsScrollableBackground())
                     {
-                        sideDesc = isOnRightSide ? ", right side" : ", left side";
+                        sideDesc = isOnRightSide
+                            ? ", " + L.Get("position.right_side")
+                            : ", " + L.Get("position.left_side");
                     }
-                    string status = isDiscovered ? " (found)" : "";
+                    string status = isDiscovered
+                        ? " (" + L.Get("luminol.blood_trace_found") + ")"
+                        : "";
 
                     _hotspots.Add(
                         new HotspotInfo
@@ -264,13 +273,13 @@ namespace AccessibilityMod.Services
             float areaHeight = 1080f;
 
             string horizontal =
-                x < areaWidth * 0.33f ? "left"
-                : x > areaWidth * 0.66f ? "right"
-                : "center";
+                x < areaWidth * 0.33f ? L.Get("position.left")
+                : x > areaWidth * 0.66f ? L.Get("position.right")
+                : L.Get("position.center");
             string vertical =
-                y < areaHeight * 0.33f ? "top"
-                : y > areaHeight * 0.66f ? "bottom"
-                : "middle";
+                y < areaHeight * 0.33f ? L.Get("position.top")
+                : y > areaHeight * 0.66f ? L.Get("position.bottom")
+                : L.Get("position.middle");
             return $"{vertical} {horizontal}";
         }
 
@@ -281,7 +290,10 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce(
+                    L.Get("system.not_in_mode", L.Get("mode.luminol")),
+                    TextType.SystemMessage
+                );
                 return;
             }
 
@@ -292,7 +304,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No blood traces found", TextType.Investigation);
+                SpeechManager.Announce(L.Get("luminol.no_traces"), TextType.Investigation);
                 return;
             }
 
@@ -328,7 +340,10 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce(
+                    L.Get("system.not_in_mode", L.Get("mode.luminol")),
+                    TextType.SystemMessage
+                );
                 return;
             }
 
@@ -339,7 +354,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No blood traces found", TextType.Investigation);
+                SpeechManager.Announce(L.Get("luminol.no_traces"), TextType.Investigation);
                 return;
             }
 
@@ -402,7 +417,9 @@ namespace AccessibilityMod.Services
             if (needsScroll)
             {
                 // Tell user to scroll, then announce hotspot
-                string scrollDir = hotspot.IsOnRightSide ? "right" : "left";
+                string scrollDir = hotspot.IsOnRightSide
+                    ? L.Get("position.right")
+                    : L.Get("position.left");
                 SpeechManager.Announce(
                     $"{hotspot.Description}. Press Q to pan {scrollDir} first.",
                     TextType.Investigation
@@ -423,7 +440,10 @@ namespace AccessibilityMod.Services
         {
             if (_hotspots.Count == 0 || _currentIndex < 0 || _currentIndex >= _hotspots.Count)
             {
-                SpeechManager.Announce("No blood trace selected", TextType.Investigation);
+                SpeechManager.Announce(
+                    L.Get("navigation.no_point_selected"),
+                    TextType.Investigation
+                );
                 return;
             }
 
@@ -499,8 +519,8 @@ namespace AccessibilityMod.Services
 
             string message =
                 remaining > 0
-                    ? $"Blood trace found! {remaining} remaining."
-                    : "Blood trace found! All traces discovered.";
+                    ? L.Get("luminol.trace_discovered", remaining)
+                    : L.Get("luminol.all_discovered");
 
             SpeechManager.Announce(message, TextType.Investigation);
         }
@@ -543,7 +563,10 @@ namespace AccessibilityMod.Services
         {
             if (!IsLuminolActive())
             {
-                SpeechManager.Announce("Not in luminol mode", TextType.SystemMessage);
+                SpeechManager.Announce(
+                    L.Get("system.not_in_mode", L.Get("mode.luminol")),
+                    TextType.SystemMessage
+                );
                 return;
             }
 
@@ -552,9 +575,13 @@ namespace AccessibilityMod.Services
             int total = _hotspots.Count;
             int remaining = GetUndiscoveredCount();
 
-            string scrollHint = IsScrollableBackground() ? " Press Q to pan." : "";
+            string scrollHint = IsScrollableBackground() ? " " + L.Get("luminol.pan_hint") : "";
             string message =
-                $"Luminol spray mode. {remaining} of {total} blood trace{(total != 1 ? "s" : "")} remaining. Use [ and ] to navigate.{scrollHint}";
+                L.Get("mode.luminol")
+                + $". {remaining} of {total} blood traces remaining. "
+                + L.Get("navigation.use_brackets_navigate")
+                + "."
+                + scrollHint;
             SpeechManager.Announce(message, TextType.Investigation);
         }
     }

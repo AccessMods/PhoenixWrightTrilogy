@@ -208,11 +208,15 @@ namespace AccessibilityMod.Services
                 }
                 else if (IsInPointingMode())
                 {
-                    stateInfo = "Pointing mode";
+                    stateInfo = L.Get("mode.pointing");
                     int pointCount = PointingNavigator.GetPointCount();
                     if (pointCount > 0)
                     {
-                        stateInfo += $". {pointCount} target areas. Use [ and ] to navigate.";
+                        stateInfo +=
+                            ". "
+                            + L.Get("navigation.x_target_areas", pointCount)
+                            + ". "
+                            + L.Get("navigation.use_brackets_navigate");
                     }
                     else
                     {
@@ -221,18 +225,23 @@ namespace AccessibilityMod.Services
                 }
                 else if (IsInInvestigationMode())
                 {
-                    stateInfo = "Investigation mode";
+                    stateInfo = L.Get("mode.investigation");
                     int hotspotCount = HotspotNavigator.GetHotspotCount();
                     int unexaminedCount = HotspotNavigator.GetUnexaminedCount();
                     if (hotspotCount > 0)
                     {
                         stateInfo +=
-                            $". {hotspotCount} points of interest, {unexaminedCount} unexamined";
+                            ". "
+                            + L.Get(
+                                "investigation.mode_entry_with_unexamined",
+                                hotspotCount,
+                                unexaminedCount
+                            );
                     }
                 }
                 else if (IsInTrialMode())
                 {
-                    stateInfo = "Trial mode";
+                    stateInfo = L.Get("mode.trial");
                     AnnounceLifeGauge();
                 }
                 else if (CurrentMode != GameMode.Unknown)
@@ -241,7 +250,7 @@ namespace AccessibilityMod.Services
                 }
                 else
                 {
-                    stateInfo = "Current state unknown";
+                    stateInfo = L.Get("system.unable_to_read_state");
                 }
 
                 SpeechManager.Announce(stateInfo, TextType.SystemMessage);
@@ -251,7 +260,10 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing state: {ex.Message}"
                 );
-                SpeechManager.Announce("Unable to determine current state", TextType.SystemMessage);
+                SpeechManager.Announce(
+                    L.Get("system.unable_to_read_state"),
+                    TextType.SystemMessage
+                );
             }
         }
 
@@ -279,11 +291,15 @@ namespace AccessibilityMod.Services
 
                     // Convert to percentage for consistent announcement
                     int percentage = (int)((float)health / maxHealth * 100);
-                    string message = $"Life gauge: {percentage} percent";
+                    string message;
 
                     if (percentage <= 20)
                     {
-                        message += " - DANGER!";
+                        message = L.Get("trial.life_gauge_danger", percentage);
+                    }
+                    else
+                    {
+                        message = L.Get("trial.life_gauge", percentage);
                     }
 
                     SpeechManager.Announce(message, TextType.Trial);

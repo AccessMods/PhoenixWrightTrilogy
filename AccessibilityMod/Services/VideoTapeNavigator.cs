@@ -207,17 +207,17 @@ namespace AccessibilityMod.Services
                 // Check for play/pause changes
                 if (isPlaying && !_wasPlaying)
                 {
-                    SpeechManager.Announce("Playing", TextType.Investigation);
+                    SpeechManager.Announce(L.Get("video_tape.playing"), TextType.Investigation);
                 }
                 else if (!isPlaying && _wasPlaying)
                 {
                     int targetCount = GetActiveTargetCount();
                     string targetInfo =
                         targetCount > 0
-                            ? $", {targetCount} target{(targetCount != 1 ? "s" : "")}"
+                            ? ", " + L.Get("video_tape.targets_available", targetCount)
                             : "";
                     SpeechManager.Announce(
-                        $"Paused at frame {currentFrame}{targetInfo}",
+                        L.Get("video_tape.paused_at_frame", currentFrame, targetInfo),
                         TextType.Investigation
                     );
                 }
@@ -227,7 +227,7 @@ namespace AccessibilityMod.Services
                 if (currentTargetCount > 0 && _lastTargetCount == 0)
                 {
                     SpeechManager.Announce(
-                        $"Target available! Pause with Backspace.",
+                        L.Get("video_tape.target_available"),
                         TextType.Investigation
                     );
                 }
@@ -245,10 +245,7 @@ namespace AccessibilityMod.Services
             _lastTargetCount = 0;
             _currentTargetIndex = -1;
 
-            SpeechManager.Announce(
-                "Video tape examination. Backspace to play/pause, Enter to fast forward, J to rewind, E to present. Press H for hint.",
-                TextType.Investigation
-            );
+            SpeechManager.Announce(L.Get("video_tape.start"), TextType.Investigation);
         }
 
         private static void OnVideoTapeEnd()
@@ -264,7 +261,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("video_tape.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -273,20 +270,22 @@ namespace AccessibilityMod.Services
             int targets = GetActiveTargetCount();
             bool overTarget = IsCursorOverTarget();
 
-            string state = playing ? "Playing" : "Paused";
+            string state = playing
+                ? L.Get("video_tape.state_playing")
+                : L.Get("video_tape.state_paused");
             string targetInfo =
                 targets > 0
-                    ? $"{targets} target{(targets > 1 ? "s" : "")} available"
-                    : "No targets";
+                    ? L.Get("video_tape.targets_available", targets)
+                    : L.Get("video_tape.no_targets");
 
             if (overTarget)
             {
                 int targetNo = GetCursorTarget();
-                targetInfo += $", cursor on target {targetNo + 1}";
+                targetInfo += L.Get("video_tape.cursor_on_target", targetNo + 1);
             }
 
             SpeechManager.Announce(
-                $"{state}, frame {frame}. {targetInfo}.",
+                L.Get("video_tape.state", state, frame, targetInfo),
                 TextType.Investigation
             );
         }
@@ -298,7 +297,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("video_tape.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -310,41 +309,19 @@ namespace AccessibilityMod.Services
             switch (atariNo)
             {
                 case 0:
-                    // First examination - find the lit locker
-                    hint =
-                        "First viewing: Find Goodman's locker lit up (open). "
-                        + "Pause when you hear target available, press ] to select it, then E to present. "
-                        + $"Current frame: {frame}.";
+                    hint = L.Get("video_tape.hint_first", frame);
                     break;
                 case 1:
-                    // Second examination - find the falling object
-                    hint =
-                        "Second viewing: Something falls from the locker. "
-                        + "A wrong target appears around frame 460. The correct falling object is around frame 490. "
-                        + "Fast forward with Enter past 460, pause with Backspace around 490, "
-                        + "press ] to cycle through targets until you find the falling object, then E to present. "
-                        + $"Current frame: {frame}.";
+                    hint = L.Get("video_tape.hint_second", frame);
                     break;
                 case 2:
-                    // Third examination
-                    hint =
-                        "Third viewing: The correct target is around frame 1360. "
-                        + "Fast forward with Enter, pause with Backspace around 1360, "
-                        + "press ] to select the target, then E to present. "
-                        + $"Current frame: {frame}.";
+                    hint = L.Get("video_tape.hint_third", frame);
                     break;
                 case 3:
-                    // Fourth examination
-                    hint =
-                        "Fourth viewing: The correct target is around frame 900. "
-                        + "Fast forward with Enter, pause with Backspace around 900, "
-                        + "press ] to select the target, then E to present. "
-                        + $"Current frame: {frame}.";
+                    hint = L.Get("video_tape.hint_fourth", frame);
                     break;
                 default:
-                    hint =
-                        "Pause when you hear target available, press ] to select it, then E to present. "
-                        + $"Current frame: {frame}.";
+                    hint = L.Get("video_tape.hint_generic", frame);
                     break;
             }
 
@@ -390,16 +367,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("video_tape.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
             if (IsPlaying())
             {
-                SpeechManager.Announce(
-                    "Pause the video first with Backspace",
-                    TextType.Investigation
-                );
+                SpeechManager.Announce(L.Get("video_tape.pause_first"), TextType.Investigation);
                 return;
             }
 
@@ -410,7 +384,7 @@ namespace AccessibilityMod.Services
                 if (activeTargets.Count == 0)
                 {
                     SpeechManager.Announce(
-                        "No targets available at this frame",
+                        L.Get("video_tape.no_targets_at_frame"),
                         TextType.Investigation
                     );
                     return;
@@ -438,16 +412,13 @@ namespace AccessibilityMod.Services
         {
             if (!IsVideoTapeActive())
             {
-                SpeechManager.Announce("Not in video tape mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("video_tape.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
             if (IsPlaying())
             {
-                SpeechManager.Announce(
-                    "Pause the video first with Backspace",
-                    TextType.Investigation
-                );
+                SpeechManager.Announce(L.Get("video_tape.pause_first"), TextType.Investigation);
                 return;
             }
 
@@ -458,7 +429,7 @@ namespace AccessibilityMod.Services
                 if (activeTargets.Count == 0)
                 {
                     SpeechManager.Announce(
-                        "No targets available at this frame",
+                        L.Get("video_tape.no_targets_at_frame"),
                         TextType.Investigation
                     );
                     return;
@@ -542,7 +513,7 @@ namespace AccessibilityMod.Services
             if (collidedNo < 4)
             {
                 SpeechManager.Announce(
-                    $"Target {index + 1} of {total}. Press E to present.",
+                    L.Get("video_tape.target_x_of_y", index + 1, total),
                     TextType.Investigation
                 );
             }
@@ -557,14 +528,14 @@ namespace AccessibilityMod.Services
                 if (collidedNo < 4)
                 {
                     SpeechManager.Announce(
-                        $"Target {index + 1} of {total}. Press E to present.",
+                        L.Get("video_tape.target_x_of_y", index + 1, total),
                         TextType.Investigation
                     );
                 }
                 else
                 {
                     SpeechManager.Announce(
-                        $"Target {index + 1} of {total}. Cursor positioned but may need adjustment. Use arrow keys to fine-tune, then E to present.",
+                        L.Get("video_tape.target_needs_adjustment", index + 1, total),
                         TextType.Investigation
                     );
                 }

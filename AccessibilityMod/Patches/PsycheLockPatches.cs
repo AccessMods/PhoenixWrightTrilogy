@@ -1,5 +1,6 @@
 using System;
 using AccessibilityMod.Core;
+using AccessibilityMod.Services;
 using HarmonyLib;
 
 namespace AccessibilityMod.Patches
@@ -105,8 +106,7 @@ namespace AccessibilityMod.Patches
                 _totalLocks = _level > 5 ? 5 : _level;
                 _lastAnnouncedLockCount = _totalLocks;
 
-                string lockWord = _totalLocks == 1 ? "Psyche-Lock" : "Psyche-Locks";
-                string message = $"{_totalLocks} {lockWord}";
+                string message = L.Get("psyche_lock.total", _totalLocks);
                 SpeechManager.Announce(message, TextType.Menu);
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
@@ -145,12 +145,11 @@ namespace AccessibilityMod.Patches
                 if (remaining <= 0)
                 {
                     // All locks broken - this will be followed by unlock_message
-                    message = "Lock broken!";
+                    message = L.Get("psyche_lock.broken");
                 }
                 else
                 {
-                    string lockWord = remaining == 1 ? "lock" : "locks";
-                    message = $"Lock broken! {remaining} {lockWord} remaining";
+                    message = L.Get("psyche_lock.broken_remaining", remaining);
                 }
 
                 SpeechManager.Announce(message, TextType.Menu);
@@ -174,7 +173,7 @@ namespace AccessibilityMod.Patches
         {
             try
             {
-                SpeechManager.Announce("All Psyche-Locks broken! Secret unlocked!", TextType.Menu);
+                SpeechManager.Announce(L.Get("psyche_lock.all_broken"), TextType.Menu);
                 _lastAnnouncedLockCount = -1;
                 _totalLocks = 0;
 

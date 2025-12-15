@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using AccessibilityMod.Core;
+using AccessibilityMod.Services;
 using HarmonyLib;
 using UnityEngine.UI;
 
@@ -252,9 +253,9 @@ namespace AccessibilityMod.Patches
             try
             {
                 var slotType = GetSlotType(__instance);
-                string typeName = slotType == 0 ? "Save" : "Load";
+                string typeName = slotType == 0 ? L.Get("save_load.save") : L.Get("save_load.load");
 
-                SpeechManager.Announce($"{typeName} menu opened", TextType.Menu);
+                SpeechManager.Announce(L.Get("save_load.menu_opened", typeName), TextType.Menu);
             }
             catch (Exception ex)
             {
@@ -371,12 +372,15 @@ namespace AccessibilityMod.Patches
 
                 if (!hasData)
                 {
-                    SpeechManager.Announce($"Slot {slotNo + 1}: No Data", TextType.Menu);
+                    SpeechManager.Announce(
+                        L.Get("save_load.slot_no_data", slotNo + 1),
+                        TextType.Menu
+                    );
                     return;
                 }
 
                 // Try to get detailed save data via reflection
-                string slotInfo = $"Slot {slotNo + 1}";
+                string slotInfo = L.Get("save_load.slot_number", slotNo + 1);
                 try
                 {
                     var slotListField = typeof(SaveLoadUICtrl).GetField(
@@ -398,7 +402,7 @@ namespace AccessibilityMod.Patches
                             {
                                 // Build comprehensive announcement
                                 var parts = new System.Collections.Generic.List<string>();
-                                parts.Add($"Slot {slotNo + 1}");
+                                parts.Add(L.Get("save_load.slot_number", slotNo + 1));
 
                                 // Get time/date
                                 if (
@@ -528,7 +532,10 @@ namespace AccessibilityMod.Patches
                     CoroutineRunner.Instance?.CancelDelayedAnnouncement();
 
                     string categoryName = GetCategoryName(cat);
-                    SpeechManager.Announce($"Options: {categoryName}", TextType.Menu);
+                    SpeechManager.Announce(
+                        L.Get("save_load.options_category", categoryName),
+                        TextType.Menu
+                    );
                 }
             }
             catch (Exception ex)
@@ -977,7 +984,7 @@ namespace AccessibilityMod.Patches
                 }
             }
             catch { }
-            return "Unknown option";
+            return L.Get("save_load.unknown_option");
         }
 
         private static string GetOptionValue(optionItem item)
@@ -1060,23 +1067,23 @@ namespace AccessibilityMod.Patches
             switch (category)
             {
                 case optionCtrl.Category.SAVE_LOAD:
-                    return "Save/Load";
+                    return L.Get("save_load.category_save_load");
                 case optionCtrl.Category.SOUND:
-                    return "Sound";
+                    return L.Get("save_load.category_sound");
                 case optionCtrl.Category.GAME:
-                    return "Game";
+                    return L.Get("save_load.category_game");
                 case optionCtrl.Category.LANGUAGE:
-                    return "Language";
+                    return L.Get("save_load.category_language");
                 case optionCtrl.Category.PC:
-                    return "Display";
+                    return L.Get("save_load.category_display");
                 case optionCtrl.Category.KEYCONFIG:
-                    return "Key Config";
+                    return L.Get("save_load.category_keyconfig");
                 case optionCtrl.Category.STORY:
-                    return "Story";
+                    return L.Get("save_load.category_story");
                 case optionCtrl.Category.CREDIT:
-                    return "Credits";
+                    return L.Get("save_load.category_credits");
                 case optionCtrl.Category.PRIVACY:
-                    return "Privacy";
+                    return L.Get("save_load.category_privacy");
                 default:
                     return category.ToString();
             }

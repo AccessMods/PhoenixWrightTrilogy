@@ -99,12 +99,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         private static void AnnounceEntry()
         {
-            string message =
-                "Unstable jar rotation puzzle. "
-                + "Rotate the jar to match the Blue Badger silhouette. "
-                + "H and N for X axis, M and B for Y axis, Q and R for Z axis. "
-                + "Press I for current position, G for hint, E to present.";
-            SpeechManager.Announce(message, TextType.Menu);
+            SpeechManager.Announce(L.Get("vase_show.start"), TextType.Menu);
             _lastAnnouncedRotation = Vector3.zero;
         }
 
@@ -123,7 +118,7 @@ namespace AccessibilityMod.Services
             float y = NormalizeAngle(rotation.y);
             float z = NormalizeAngle(rotation.z);
 
-            string message = $"Rotation: X {x:F0}, Y {y:F0}, Z {z:F0}. ";
+            string message = L.Get("vase_show.rotation_xyz", (int)x, (int)y, (int)z) + " ";
 
             // Calculate distance to both answers
             float dist1 = GetDistanceToAnswer(rotation, Answer1);
@@ -134,11 +129,11 @@ namespace AccessibilityMod.Services
 
             if (closestDist < 10)
             {
-                message += "Very close! ";
+                message += L.Get("vase_show.very_close") + " ";
             }
             else if (closestDist < 30)
             {
-                message += "Getting closer. ";
+                message += L.Get("vase_show.getting_closer") + " ";
             }
 
             // Check which axes are correct
@@ -149,16 +144,16 @@ namespace AccessibilityMod.Services
 
             if (xCorrect && yCorrect && zCorrect)
             {
-                message += "All axes aligned! Press Enter to submit.";
+                message += L.Get("vase_show.all_aligned");
             }
             else
             {
                 if (xCorrect)
-                    message += "X correct. ";
+                    message += L.Get("vase_show.x_correct") + " ";
                 if (yCorrect)
-                    message += "Y correct. ";
+                    message += L.Get("vase_show.y_correct") + " ";
                 if (zCorrect)
-                    message += "Z correct. ";
+                    message += L.Get("vase_show.z_correct") + " ";
             }
 
             SpeechManager.Announce(message, TextType.Menu);
@@ -184,14 +179,15 @@ namespace AccessibilityMod.Services
             int answerNum = dist1 <= dist2 ? 1 : 2;
 
             string hint =
-                $"Target {answerNum}: X={target.x:F0}, Y={target.y:F0}, Z={target.z:F0}. ";
+                L.Get("vase_show.target", answerNum, (int)target.x, (int)target.y, (int)target.z)
+                + " ";
 
             // Current normalized
             float x = NormalizeAngle(rotation.x);
             float y = NormalizeAngle(rotation.y);
             float z = NormalizeAngle(rotation.z);
 
-            hint += $"Current: X={x:F0}, Y={y:F0}, Z={z:F0}. ";
+            hint += L.Get("vase_show.current", (int)x, (int)y, (int)z) + " ";
 
             // Calculate needed adjustments
             float xDiff = GetAngleDifference(x, target.x);
@@ -202,31 +198,31 @@ namespace AccessibilityMod.Services
             if (Math.Abs(xDiff) > SafeRange.x)
             {
                 string direction = xDiff > 0 ? "H key" : "N key";
-                hint += $"X needs {Math.Abs(xDiff):F0} degrees ({direction}). ";
+                hint += L.Get("vase_show.x_needs", (int)Math.Abs(xDiff), direction) + " ";
             }
             else
             {
-                hint += "X aligned. ";
+                hint += L.Get("vase_show.x_aligned") + " ";
             }
 
             if (Math.Abs(yDiff) > SafeRange.y)
             {
                 string direction = yDiff > 0 ? "M key" : "B key";
-                hint += $"Y needs {Math.Abs(yDiff):F0} degrees ({direction}). ";
+                hint += L.Get("vase_show.y_needs", (int)Math.Abs(yDiff), direction) + " ";
             }
             else
             {
-                hint += "Y aligned. ";
+                hint += L.Get("vase_show.y_aligned") + " ";
             }
 
             if (Math.Abs(zDiff) > SafeRange.z)
             {
                 string direction = zDiff > 0 ? "R key" : "Q key";
-                hint += $"Z needs {Math.Abs(zDiff):F0} degrees ({direction}). ";
+                hint += L.Get("vase_show.z_needs", (int)Math.Abs(zDiff), direction) + " ";
             }
             else
             {
-                hint += "Z aligned. ";
+                hint += L.Get("vase_show.z_aligned") + " ";
             }
 
             SpeechManager.Announce(hint, TextType.Menu);

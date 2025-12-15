@@ -96,7 +96,7 @@ namespace AccessibilityMod.Services
                     if (pieces != null && pieces.Length == 1)
                     {
                         SpeechManager.Announce(
-                            "Vase puzzle, final piece. Use Q/R to rotate. Press H for hint, E to combine.",
+                            L.Get("vase.start_final_piece"),
                             TextType.Investigation
                         );
                         return;
@@ -108,10 +108,7 @@ namespace AccessibilityMod.Services
                 // Fall through to default message
             }
 
-            SpeechManager.Announce(
-                "Vase puzzle. Use Left/Right to select pieces, Q/R to rotate. Press H for hint, E to combine.",
-                TextType.Investigation
-            );
+            SpeechManager.Announce(L.Get("vase.start"), TextType.Investigation);
         }
 
         private static void OnPuzzleEnd()
@@ -127,7 +124,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVasePuzzleActive())
             {
-                SpeechManager.Announce("Not in vase puzzle", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("vase.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -156,7 +153,7 @@ namespace AccessibilityMod.Services
 
                 if (stepField == null || cursorField == null || piecesField == null)
                 {
-                    SpeechManager.Announce("Unable to read puzzle state", TextType.SystemMessage);
+                    SpeechManager.Announce(L.Get("vase.unable_read_state"), TextType.SystemMessage);
                     return;
                 }
 
@@ -170,7 +167,10 @@ namespace AccessibilityMod.Services
 
                 if (pieces == null)
                 {
-                    SpeechManager.Announce("Unable to read pieces", TextType.SystemMessage);
+                    SpeechManager.Announce(
+                        L.Get("vase.unable_read_pieces"),
+                        TextType.SystemMessage
+                    );
                     return;
                 }
 
@@ -180,7 +180,7 @@ namespace AccessibilityMod.Services
                 // Check if puzzle is complete
                 if (puzzleStep >= solutionPieceOrder.Length)
                 {
-                    SpeechManager.Announce("Puzzle complete!", TextType.Investigation);
+                    SpeechManager.Announce(L.Get("vase.complete"), TextType.Investigation);
                     return;
                 }
 
@@ -189,19 +189,18 @@ namespace AccessibilityMod.Services
                 int piecesRemaining = solutionPieceOrder.Length - puzzleStep;
 
                 // Build the hint message
-                string hint =
-                    $"{piecesRemaining} {(piecesRemaining == 1 ? "piece" : "pieces")} remaining. ";
+                string hint = L.Get("vase.pieces_remaining", piecesRemaining) + " ";
 
                 // Check if they're on the correct piece
                 if (currentCursor == correctPieceIndex)
                 {
-                    hint += "Correct piece selected. ";
+                    hint += L.Get("vase.correct_piece") + " ";
 
                     // Check rotation
                     int currentAngle = pieces[currentCursor].angle_id;
                     if (currentAngle == 0)
                     {
-                        hint += "Rotation correct. Press E to combine.";
+                        hint += L.Get("vase.rotation_correct");
                     }
                     else
                     {
@@ -214,13 +213,11 @@ namespace AccessibilityMod.Services
 
                         if (rightPresses <= leftPresses)
                         {
-                            hint +=
-                                $"Press R {rightPresses} time{(rightPresses != 1 ? "s" : "")} to rotate.";
+                            hint += L.Get("vase.press_r_times", rightPresses);
                         }
                         else
                         {
-                            hint +=
-                                $"Press Q {leftPresses} time{(leftPresses != 1 ? "s" : "")} to rotate.";
+                            hint += L.Get("vase.press_q_times", leftPresses);
                         }
                     }
                 }
@@ -229,21 +226,20 @@ namespace AccessibilityMod.Services
                     // Tell them which piece to select
                     // Pieces are displayed 1-8 but indexed 0-7
                     int displayNumber = correctPieceIndex + 1;
-                    int currentDisplay = currentCursor + 1;
 
                     // Calculate direction to move
                     int distance = correctPieceIndex - currentCursor;
 
                     // Account for used pieces when calculating moves
-                    hint += $"Select piece {displayNumber}. ";
+                    hint += L.Get("vase.select_piece", displayNumber) + " ";
 
                     if (distance > 0)
                     {
-                        hint += $"Press Right to navigate.";
+                        hint += L.Get("vase.press_right");
                     }
                     else
                     {
-                        hint += $"Press Left to navigate.";
+                        hint += L.Get("vase.press_left");
                     }
                 }
 
@@ -254,7 +250,7 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error getting vase puzzle hint: {ex.Message}"
                 );
-                SpeechManager.Announce("Unable to get hint", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("vase.unable_get_hint"), TextType.SystemMessage);
             }
         }
 
@@ -265,7 +261,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsVasePuzzleActive())
             {
-                SpeechManager.Announce("Not in vase puzzle", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("vase.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -288,7 +284,7 @@ namespace AccessibilityMod.Services
 
                 if (cursorField == null || piecesField == null || stepField == null)
                 {
-                    SpeechManager.Announce("Unable to read puzzle state", TextType.SystemMessage);
+                    SpeechManager.Announce(L.Get("vase.unable_read_state"), TextType.SystemMessage);
                     return;
                 }
 
@@ -298,7 +294,10 @@ namespace AccessibilityMod.Services
 
                 if (pieces == null || currentCursor >= pieces.Length)
                 {
-                    SpeechManager.Announce("Unable to read pieces", TextType.SystemMessage);
+                    SpeechManager.Announce(
+                        L.Get("vase.unable_read_pieces"),
+                        TextType.SystemMessage
+                    );
                     return;
                 }
 
@@ -309,17 +308,16 @@ namespace AccessibilityMod.Services
                 int rotation = pieces[currentCursor].angle_id * 90;
                 bool isUsed = pieces[currentCursor].used;
 
-                string state = $"Piece {displayNumber}";
+                string state = L.Get("vase.piece_number", displayNumber);
                 if (isUsed)
                 {
-                    state += " (already placed)";
+                    state += " " + L.Get("vase.already_placed");
                 }
                 else
                 {
-                    state += $", rotated {rotation} degrees";
+                    state += ", " + L.Get("vase.rotated_degrees", rotation);
                 }
-                state +=
-                    $". {piecesRemaining} {(piecesRemaining == 1 ? "piece" : "pieces")} remaining.";
+                state += ". " + L.Get("vase.pieces_remaining", piecesRemaining);
 
                 SpeechManager.Announce(state, TextType.Investigation);
             }
@@ -328,7 +326,7 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error getting vase puzzle state: {ex.Message}"
                 );
-                SpeechManager.Announce("Unable to read state", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("vase.unable_read_state"), TextType.SystemMessage);
             }
         }
     }

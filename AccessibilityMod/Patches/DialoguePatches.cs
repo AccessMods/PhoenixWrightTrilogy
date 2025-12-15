@@ -554,23 +554,23 @@ namespace AccessibilityMod.Patches
                     case KeyType.Y:
                         return "Y";
                     case KeyType.L:
-                        return "LB";
+                        return L.Get("gamepad.lb");
                     case KeyType.R:
-                        return "RB";
+                        return L.Get("gamepad.rb");
                     case KeyType.ZL:
-                        return "LT";
+                        return L.Get("gamepad.lt");
                     case KeyType.ZR:
-                        return "RT";
+                        return L.Get("gamepad.rt");
                     case KeyType.Start:
-                        return "Menu";
+                        return L.Get("gamepad.menu");
                     case KeyType.Select:
-                        return "View";
+                        return L.Get("gamepad.view");
                     case KeyType.StickL:
-                        return "Left Stick";
+                        return L.Get("gamepad.left_stick");
                     case KeyType.StickR:
-                        return "Right Stick";
+                        return L.Get("gamepad.right_stick");
                     case KeyType.Record:
-                        return "RB";
+                        return L.Get("gamepad.rb");
                     default:
                         return keyType.ToString();
                 }
@@ -595,53 +595,53 @@ namespace AccessibilityMod.Patches
             switch (keyCode)
             {
                 case KeyCode.Space:
-                    return "Space";
+                    return L.Get("key.space");
                 case KeyCode.Return:
-                    return "Enter";
+                    return L.Get("key.enter");
                 case KeyCode.Escape:
-                    return "Escape";
+                    return L.Get("key.escape");
                 case KeyCode.Tab:
-                    return "Tab";
+                    return L.Get("key.tab");
                 case KeyCode.Backspace:
-                    return "Backspace";
+                    return L.Get("key.backspace");
                 case KeyCode.Delete:
-                    return "Delete";
+                    return L.Get("key.delete");
                 case KeyCode.Insert:
                     return "Insert";
                 case KeyCode.Home:
-                    return "Home";
+                    return L.Get("key.home");
                 case KeyCode.End:
-                    return "End";
+                    return L.Get("key.end");
                 case KeyCode.PageUp:
-                    return "Page Up";
+                    return L.Get("key.page_up");
                 case KeyCode.PageDown:
-                    return "Page Down";
+                    return L.Get("key.page_down");
                 case KeyCode.UpArrow:
-                    return "Up Arrow";
+                    return L.Get("key.up_arrow");
                 case KeyCode.DownArrow:
-                    return "Down Arrow";
+                    return L.Get("key.down_arrow");
                 case KeyCode.LeftArrow:
-                    return "Left Arrow";
+                    return L.Get("key.left_arrow");
                 case KeyCode.RightArrow:
-                    return "Right Arrow";
+                    return L.Get("key.right_arrow");
                 case KeyCode.LeftShift:
-                    return "Left Shift";
+                    return L.Get("key.left_shift");
                 case KeyCode.RightShift:
-                    return "Right Shift";
+                    return L.Get("key.right_shift");
                 case KeyCode.LeftControl:
-                    return "Left Ctrl";
+                    return L.Get("key.left_ctrl");
                 case KeyCode.RightControl:
-                    return "Right Ctrl";
+                    return L.Get("key.right_ctrl");
                 case KeyCode.LeftAlt:
-                    return "Left Alt";
+                    return L.Get("key.left_alt");
                 case KeyCode.RightAlt:
-                    return "Right Alt";
+                    return L.Get("key.right_alt");
                 default:
                     string name = keyCode.ToString();
                     if (name.StartsWith("Alpha"))
                         return name.Substring(5);
                     if (name.StartsWith("Keypad"))
-                        return "Numpad " + name.Substring(6);
+                        return L.Get("key.numpad_x", name.Substring(6));
                     return name;
             }
         }

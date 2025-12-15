@@ -71,13 +71,18 @@ namespace AccessibilityMod.Services
             if (_points.Count > 0)
             {
                 string message =
-                    $"Pointing mode. {_points.Count} target areas. Use [ and ] to navigate, E to present.";
+                    L.Get("mode.pointing")
+                    + ". "
+                    + L.Get("navigation.x_target_areas", _points.Count)
+                    + ". "
+                    + L.Get("navigation.use_brackets_navigate")
+                    + ", E to present.";
                 SpeechManager.Announce(message, TextType.Trial);
             }
             else
             {
                 SpeechManager.Announce(
-                    "Pointing mode. Use arrow keys to move cursor, E to present.",
+                    L.Get("mode.pointing") + ". Use arrow keys to move cursor, E to present.",
                     TextType.Trial
                 );
             }
@@ -183,13 +188,13 @@ namespace AccessibilityMod.Services
             }
 
             string horizontal =
-                x < areaWidth * 0.33f ? "left"
-                : x > areaWidth * 0.66f ? "right"
-                : "center";
+                x < areaWidth * 0.33f ? L.Get("position.left")
+                : x > areaWidth * 0.66f ? L.Get("position.right")
+                : L.Get("position.center");
             string vertical =
-                y < areaHeight * 0.33f ? "top"
-                : y > areaHeight * 0.66f ? "bottom"
-                : "middle";
+                y < areaHeight * 0.33f ? L.Get("position.top")
+                : y > areaHeight * 0.66f ? L.Get("position.bottom")
+                : L.Get("position.middle");
             return $"{vertical} {horizontal}";
         }
 
@@ -200,7 +205,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("pointing.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -211,7 +216,7 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                SpeechManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce(L.Get("navigation.no_target_areas"), TextType.Trial);
                 return;
             }
 
@@ -227,7 +232,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("pointing.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -238,7 +243,7 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                SpeechManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce(L.Get("navigation.no_target_areas"), TextType.Trial);
                 return;
             }
 
@@ -254,7 +259,7 @@ namespace AccessibilityMod.Services
         {
             if (_points.Count == 0 || _currentIndex >= _points.Count)
             {
-                SpeechManager.Announce("No point selected", TextType.Trial);
+                SpeechManager.Announce(L.Get("navigation.no_point_selected"), TextType.Trial);
                 return;
             }
 
@@ -269,7 +274,7 @@ namespace AccessibilityMod.Services
         {
             if (!IsPointingActive())
             {
-                SpeechManager.Announce("Not in pointing mode", TextType.SystemMessage);
+                SpeechManager.Announce(L.Get("pointing.not_in_mode"), TextType.SystemMessage);
                 return;
             }
 
@@ -280,11 +285,11 @@ namespace AccessibilityMod.Services
 
             if (_points.Count == 0)
             {
-                SpeechManager.Announce("No target areas found", TextType.Trial);
+                SpeechManager.Announce(L.Get("navigation.no_target_areas"), TextType.Trial);
                 return;
             }
 
-            string summary = $"{_points.Count} target areas: ";
+            string summary = L.Get("navigation.x_target_areas", _points.Count) + ": ";
             var descriptions = new List<string>();
             foreach (var point in _points)
             {

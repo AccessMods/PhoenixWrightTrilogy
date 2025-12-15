@@ -26,6 +26,9 @@ namespace AccessibilityMod.Core
 
             try
             {
+                // Initialize localization first (needed by other services)
+                LocalizationService.Initialize();
+
                 // Create the coroutine runner for clipboard processing
                 GameObject managerObject = new GameObject("AccessibilityMod_CoroutineRunner");
                 managerObject.AddComponent<CoroutineRunner>();
@@ -275,15 +278,17 @@ namespace AccessibilityMod.Core
         {
             try
             {
+                // Reload localization first (may affect other services' paths)
+                LocalizationService.ReloadFromFiles();
                 CharacterNameService.ReloadFromFiles();
                 EvidenceDetailService.ReloadFromFiles();
-                SpeechManager.Announce("Configuration reloaded");
+                SpeechManager.Announce(L.Get("system.config_reloaded"));
                 Logger.Msg("Configuration files reloaded via F5");
             }
             catch (Exception ex)
             {
                 Logger.Error($"Error reloading config files: {ex.Message}");
-                SpeechManager.Announce("Error reloading configuration");
+                SpeechManager.Announce(L.Get("system.config_reload_error"));
             }
         }
 

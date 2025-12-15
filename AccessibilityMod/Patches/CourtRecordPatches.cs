@@ -3,6 +3,7 @@ using System.Text;
 using AccessibilityMod.Core;
 using AccessibilityMod.Services;
 using HarmonyLib;
+using L = AccessibilityMod.Services.L;
 
 namespace AccessibilityMod.Patches
 {
@@ -26,7 +27,8 @@ namespace AccessibilityMod.Patches
         {
             try
             {
-                string tabName = mode == 0 ? "Evidence" : "Profiles";
+                string tabName =
+                    mode == 0 ? L.Get("court_record.evidence") : L.Get("court_record.profiles");
 
                 // Get item count for current tab
                 int itemCount = 0;
@@ -35,7 +37,7 @@ namespace AccessibilityMod.Patches
                     itemCount = __instance.record_data_[mode].cursor_num_;
                 }
 
-                string message = $"Court Record: {tabName}. {itemCount} items.";
+                string message = L.Get("court_record.opened", tabName, itemCount);
                 SpeechManager.Announce(message, TextType.Menu);
 
                 // Reset tracking
@@ -67,7 +69,10 @@ namespace AccessibilityMod.Patches
                 // Only announce if we actually switched tabs (not initial open)
                 if (_lastRecordType != -1 && _lastRecordType != recordType)
                 {
-                    string tabName = recordType == 0 ? "Evidence" : "Profiles";
+                    string tabName =
+                        recordType == 0
+                            ? L.Get("court_record.evidence")
+                            : L.Get("court_record.profiles");
 
                     int itemCount = 0;
                     if (
@@ -78,7 +83,7 @@ namespace AccessibilityMod.Patches
                         itemCount = __instance.record_data_[recordType].cursor_num_;
                     }
 
-                    string message = $"{tabName}. {itemCount} items.";
+                    string message = L.Get("court_record.tab_items", tabName, itemCount);
                     SpeechManager.Announce(message, TextType.Menu);
                 }
 
@@ -145,7 +150,7 @@ namespace AccessibilityMod.Patches
                 // Check if item has details available
                 if (currentItem.detail_id != 0 || currentItem.obj_id != 0)
                 {
-                    sb.Append(" - Press Enter for details");
+                    sb.Append(" - ").Append(L.Get("court_record.press_for_details"));
                 }
 
                 SpeechManager.Announce(sb.ToString(), TextType.Menu);
@@ -264,17 +269,17 @@ namespace AccessibilityMod.Patches
                 }
                 else
                 {
-                    sb.Append($"No description. Detail ID: {in_id}. ");
+                    sb.Append(L.Get("court_record.no_description", in_id));
                 }
 
                 // Add page info if multi-page
                 if (pageCount > 1)
                 {
-                    sb.Append(" Page 1 of ").Append(pageCount).Append(".");
-                    sb.Append(" Press left or right for pages.");
+                    sb.Append(" ").Append(L.Get("court_record.page_x_of_y", 1, pageCount));
+                    sb.Append(" ").Append(L.Get("court_record.page_navigation_hint"));
                 }
 
-                sb.Append(" Press Backspace to close.");
+                sb.Append(" ").Append(L.Get("court_record.close_hint"));
                 SpeechManager.Announce(sb.ToString(), TextType.Menu);
             }
             catch (Exception ex)
@@ -296,14 +301,8 @@ namespace AccessibilityMod.Patches
                     return;
 
                 StringBuilder sb = new StringBuilder();
-                sb.Append("Page ").Append(page_num + 1);
-
-                if (_currentDetailPageCount > 1)
-                {
-                    sb.Append(" of ").Append(_currentDetailPageCount);
-                }
-
-                sb.Append(". ");
+                sb.Append(L.Get("court_record.page_x_of_y", page_num + 1, _currentDetailPageCount))
+                    .Append(" ");
 
                 // Try to get accessibility description for this page
                 string description = EvidenceDetailService.GetDescription(

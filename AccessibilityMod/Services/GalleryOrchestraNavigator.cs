@@ -30,14 +30,14 @@ namespace AccessibilityMod.Services
                 var instance = UnityEngine.Object.FindObjectOfType<GalleryOrchestraCtrl>();
                 if (instance == null)
                 {
-                    SpeechManager.Announce("Music player", TextType.Menu);
+                    SpeechManager.Announce(L.Get("orchestra.music_player"), TextType.Menu);
                     return;
                 }
 
                 var state = GalleryOrchestraPatches.GetCurrentState(instance);
 
                 // Build announcement
-                string announcement = "Music player";
+                string announcement = L.Get("orchestra.music_player");
 
                 // Album name
                 if (!Net35Extensions.IsNullOrWhiteSpace(state.AlbumName))
@@ -51,16 +51,20 @@ namespace AccessibilityMod.Services
                     && state.CurrentSongIndex >= 0
                 )
                 {
-                    announcement += $". Track {state.CurrentSongIndex + 1}: {state.SongTitle}";
+                    announcement +=
+                        ". "
+                        + L.Get("orchestra.track", state.CurrentSongIndex + 1, state.SongTitle);
                 }
 
                 // Play state
-                announcement += state.IsPlaying ? ". Playing" : ". Stopped";
+                announcement += state.IsPlaying
+                    ? ". " + L.Get("orchestra.playing")
+                    : ". " + L.Get("orchestra.stopped");
 
                 // Play mode
                 if (!Net35Extensions.IsNullOrWhiteSpace(state.PlayModeName))
                 {
-                    announcement += $". Mode: {state.PlayModeName}";
+                    announcement += ". " + L.Get("orchestra.mode", state.PlayModeName);
                 }
 
                 SpeechManager.Announce(announcement, TextType.Menu);
@@ -70,7 +74,7 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing orchestra state: {ex.Message}"
                 );
-                SpeechManager.Announce("Music player", TextType.Menu);
+                SpeechManager.Announce(L.Get("orchestra.music_player"), TextType.Menu);
             }
         }
 
@@ -79,18 +83,7 @@ namespace AccessibilityMod.Services
         /// </summary>
         public static void AnnounceHelp()
         {
-            string help =
-                "Music player controls: "
-                + "Up and Down select tracks. "
-                + "Left and Right jump by four tracks. "
-                + "Z and X change albums. "
-                + "J and N cycle play modes. "
-                + "Tab skips to next track, Q to previous. "
-                + "Enter plays or stops. "
-                + "I announces current state. "
-                + "Backspace exits.";
-
-            SpeechManager.Announce(help, TextType.Menu);
+            SpeechManager.Announce(L.Get("orchestra.controls_help"), TextType.Menu);
         }
     }
 }

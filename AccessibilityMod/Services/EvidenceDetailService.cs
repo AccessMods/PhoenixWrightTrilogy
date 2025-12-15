@@ -29,12 +29,14 @@ namespace AccessibilityMod.Services
         {
             get
             {
-                string gameDir = AppDomain.CurrentDomain.BaseDirectory;
-                return Path.Combine(
-                    Path.Combine(Path.Combine(gameDir, "UserData"), "AccessibilityMod"),
-                    "EvidenceDetails"
-                );
+                // Use localized folder path
+                return Path.Combine(LocalizationService.GetLanguageFolder(), "EvidenceDetails");
             }
+        }
+
+        private static string EnglishEvidenceDetailsFolder
+        {
+            get { return Path.Combine(LocalizationService.GetEnglishFolder(), "EvidenceDetails"); }
         }
 
         /// <summary>
@@ -93,14 +95,15 @@ namespace AccessibilityMod.Services
             try
             {
                 string baseFolder = EvidenceDetailsFolder;
+                string englishFolder = EnglishEvidenceDetailsFolder;
 
-                // Create folder structure if needed
-                EnsureFolderStructure(baseFolder);
+                // Create English folder structure if needed (as the base/fallback)
+                EnsureFolderStructure(englishFolder);
 
-                // Load override files from each game folder
-                LoadGameFolder(Path.Combine(baseFolder, "GS1"), _gs1Overrides);
-                LoadGameFolder(Path.Combine(baseFolder, "GS2"), _gs2Overrides);
-                LoadGameFolder(Path.Combine(baseFolder, "GS3"), _gs3Overrides);
+                // Load override files from each game folder with fallback to English
+                LoadGameFolderWithFallback("GS1", baseFolder, englishFolder, _gs1Overrides);
+                LoadGameFolderWithFallback("GS2", baseFolder, englishFolder, _gs2Overrides);
+                LoadGameFolderWithFallback("GS3", baseFolder, englishFolder, _gs3Overrides);
 
                 int totalOverrides =
                     _gs1Overrides.Count + _gs2Overrides.Count + _gs3Overrides.Count;
@@ -117,6 +120,46 @@ namespace AccessibilityMod.Services
                     $"Error loading evidence detail overrides: {ex.Message}"
                 );
             }
+        }
+
+        private static void LoadGameFolderWithFallback(
+            string gameFolderName,
+            string primaryBase,
+            string fallbackBase,
+            Dictionary<int, DetailDescription> target
+        )
+        {
+            // Try primary (current language) folder first
+            string primaryPath = Path.Combine(primaryBase, gameFolderName);
+            if (Directory.Exists(primaryPath) && HasTextFiles(primaryPath))
+            {
+                LoadGameFolder(primaryPath, target);
+                return;
+            }
+
+            // Fall back to English folder
+            string fallbackPath = Path.Combine(fallbackBase, gameFolderName);
+            if (Directory.Exists(fallbackPath))
+            {
+                LoadGameFolder(fallbackPath, target);
+            }
+        }
+
+        private static bool HasTextFiles(string folderPath)
+        {
+            try
+            {
+                string[] files = Directory.GetFiles(folderPath, "*.txt");
+                // Check if any non-underscore files exist
+                foreach (string file in files)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(file);
+                    if (!fileName.StartsWith("_"))
+                        return true;
+                }
+            }
+            catch { }
+            return false;
         }
 
         private static void EnsureFolderStructure(string baseFolder)

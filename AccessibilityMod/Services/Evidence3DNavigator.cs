@@ -98,7 +98,10 @@ namespace AccessibilityMod.Services
 
                     // Convert to percentage for clearer announcement
                     int zoomPercent = (int)(currentZoom * 100);
-                    SpeechManager.Announce($"Zoom {zoomPercent}%", TextType.Menu);
+                    SpeechManager.Announce(
+                        L.Get("evidence_3d.zoom_percent", zoomPercent),
+                        TextType.Menu
+                    );
                 }
             }
             catch { }
@@ -220,7 +223,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No hotspots found", TextType.Menu);
+                SpeechManager.Announce(L.Get("evidence_3d.no_hotspots"), TextType.Menu);
                 return;
             }
 
@@ -240,7 +243,7 @@ namespace AccessibilityMod.Services
 
             if (_hotspots.Count == 0)
             {
-                SpeechManager.Announce("No hotspots found", TextType.Menu);
+                SpeechManager.Announce(L.Get("evidence_3d.no_hotspots"), TextType.Menu);
                 return;
             }
 
@@ -503,7 +506,11 @@ namespace AccessibilityMod.Services
 #endif
 
                 // Announce the hotspot
-                string message = $"{hotspot.Name} of {_hotspots.Count}";
+                string message = L.Get(
+                    "evidence_3d.hotspot_x_of_y",
+                    _currentHotspotIndex + 1,
+                    _hotspots.Count
+                );
                 SpeechManager.Announce(message, TextType.Menu);
             }
             catch (Exception ex)
@@ -646,17 +653,18 @@ namespace AccessibilityMod.Services
                 bool overHotspot = IsOverHotspot();
                 int hotspotCount = _hotspots.Count;
 
-                string hotspotStatus = overHotspot ? "On hotspot" : "No hotspot";
-                string message =
-                    $"Zoom: {zoomLevel}. {hotspotStatus}. {hotspotCount} hotspots total.";
+                string hotspotStatus = overHotspot
+                    ? L.Get("evidence_3d.on_hotspot")
+                    : L.Get("evidence_3d.no_hotspot");
+                string message = L.Get("evidence_3d.state", zoomLevel, hotspotStatus, hotspotCount);
 
                 if (overHotspot)
                 {
-                    message += " Press Enter to examine.";
+                    message += " " + L.Get("evidence_3d.press_enter");
                 }
                 else
                 {
-                    message += " Use [ and ] to navigate hotspots.";
+                    message += " " + L.Get("evidence_3d.use_brackets");
                 }
 
                 SpeechManager.Announce(message, TextType.Menu);
@@ -666,7 +674,7 @@ namespace AccessibilityMod.Services
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
                     $"Error announcing 3D state: {ex.Message}"
                 );
-                SpeechManager.Announce("Unable to read 3D examination state", TextType.Menu);
+                SpeechManager.Announce(L.Get("evidence_3d.unable_to_read"), TextType.Menu);
             }
         }
 
@@ -676,7 +684,10 @@ namespace AccessibilityMod.Services
         public static void AnnounceZoom()
         {
             string zoomLevel = GetZoomLevel();
-            SpeechManager.Announce($"Zoom: {zoomLevel}", TextType.Menu);
+            SpeechManager.Announce(
+                L.Get("evidence_3d.zoom_percent", int.Parse(zoomLevel.Replace("%", ""))),
+                TextType.Menu
+            );
         }
 
         /// <summary>
@@ -686,11 +697,11 @@ namespace AccessibilityMod.Services
         {
             if (IsOverHotspot())
             {
-                SpeechManager.Announce("Hotspot detected, press Enter to examine", TextType.Menu);
+                SpeechManager.Announce(L.Get("evidence_3d.hotspot_detected"), TextType.Menu);
             }
             else
             {
-                SpeechManager.Announce("No hotspot under cursor", TextType.Menu);
+                SpeechManager.Announce(L.Get("evidence_3d.no_hotspot_cursor"), TextType.Menu);
             }
         }
 

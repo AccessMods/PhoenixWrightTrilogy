@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using AccessibilityMod.Core;
+using AccessibilityMod.Services;
 using HarmonyLib;
 
 namespace AccessibilityMod.Patches
@@ -148,11 +149,11 @@ namespace AccessibilityMod.Patches
             switch (idx)
             {
                 case 0:
-                    return "Music Player";
+                    return L.Get("gallery.music_player");
                 case 1:
-                    return "Art Library";
+                    return L.Get("gallery.art_library");
                 case 2:
-                    return "Action Studio";
+                    return L.Get("gallery.action_studio");
                 default:
                     return $"Item {idx + 1}";
             }
