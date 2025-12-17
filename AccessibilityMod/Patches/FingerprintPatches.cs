@@ -11,23 +11,6 @@ namespace AccessibilityMod.Patches
     [HarmonyPatch]
     public static class FingerprintPatches
     {
-        // Character names indexed by character index
-        // Note: indices 1 and 2 are swapped from the Japanese constant names
-        private static readonly string[] CharacterNames = new string[]
-        {
-            "Ema Skye", // 0
-            "Mike Meekins", // 1 (SW_HUMAN_TOMOE in Japanese)
-            "Jake Marshall", // 2 (SW_HUMAN_ZAIMON in Japanese)
-            "Lana Skye", // 3
-            "Damon Gant", // 4
-            "Bruce Goodman", // 5
-            "Damon Gant", // 6
-            "Dick Gumshoe", // 7
-        };
-
-        // Maps display position to character index
-        private static readonly int[] DisplayToCharacter = new int[] { 6, 5, 2, 4, 7, 1, 0, 3 };
-
         private static int _lastCursor = -1;
 
         /// <summary>
@@ -52,14 +35,10 @@ namespace AccessibilityMod.Patches
                     {
                         _lastCursor = cursor;
 
-                        if (cursor >= 0 && cursor < DisplayToCharacter.Length)
+                        string name = FingerprintNavigator.GetComparisonCharacterName(cursor);
+                        if (name != null)
                         {
-                            int charIndex = DisplayToCharacter[cursor];
-                            if (charIndex >= 0 && charIndex < CharacterNames.Length)
-                            {
-                                string name = CharacterNames[charIndex];
-                                SpeechManager.Announce(name, TextType.Investigation);
-                            }
+                            SpeechManager.Announce(name, TextType.Investigation);
                         }
                     }
                 }

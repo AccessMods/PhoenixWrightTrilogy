@@ -34,25 +34,30 @@ namespace AccessibilityMod.Services
             new Vector2(6.75f, 6.75f),
         };
 
-        // Character names in English (indexed by character index)
-        // Note: indices 1 and 2 are swapped from the Japanese constant names
-        private static readonly string[] CharacterNames = new string[]
+        // Localization keys for suspects in comparison phase, indexed by display position (left to right)
+        private static readonly string[] ComparisonCharacterKeys = new string[]
         {
-            "Ema Skye", // 0
-            "Mike Meekins", // 1 (SW_HUMAN_TOMOE in Japanese)
-            "Jake Marshall", // 2 (SW_HUMAN_ZAIMON in Japanese)
-            "Lana Skye", // 3
-            "Damon Gant", // 4
-            "Bruce Goodman", // 5
-            "Damon Gant", // 6
-            "Dick Gumshoe", // 7
+            "fingerprint.character.damon_gant", // Position 0
+            "fingerprint.character.mike_meekins", // Position 1
+            "fingerprint.character.jake_marshall", // Position 2
+            "fingerprint.character.bruce_goodman", // Position 3
+            "fingerprint.character.dick_gumshoe", // Position 4
+            "fingerprint.character.lana_skye", // Position 5
+            "fingerprint.character.ema_skye", // Position 6
+            "fingerprint.character.angel_starr", // Position 7
         };
 
-        // Maps display position to character index (from human_idx_tbl)
-        private static readonly int[] DisplayToCharacter = new int[] { 6, 5, 2, 4, 7, 1, 0, 3 };
-
-        // Correct character index for each game (from finger_info[].correct)
-        private static readonly int[] CorrectAnswers = new int[] { 7, 2, 0 }; // Gumshoe, Jake Marshall, Ema
+        /// <summary>
+        /// Gets the localized character name for a comparison display position.
+        /// </summary>
+        public static string GetComparisonCharacterName(int displayPosition)
+        {
+            if (displayPosition >= 0 && displayPosition < ComparisonCharacterKeys.Length)
+            {
+                return L.Get(ComparisonCharacterKeys[displayPosition]);
+            }
+            return null;
+        }
 
         /// <summary>
         /// Checks if the fingerprint mini-game is currently active.
@@ -697,10 +702,11 @@ namespace AccessibilityMod.Services
                     {
                         _lastCompCursor = cursor;
 
-                        int charIndex = DisplayToCharacter[cursor];
-                        string name = CharacterNames[charIndex];
-
-                        SpeechManager.Announce(name, TextType.Investigation);
+                        string name = GetComparisonCharacterName(cursor);
+                        if (name != null)
+                        {
+                            SpeechManager.Announce(name, TextType.Investigation);
+                        }
                     }
                 }
             }
@@ -733,14 +739,16 @@ namespace AccessibilityMod.Services
                     if (cursorField != null)
                     {
                         int cursor = (int)cursorField.GetValue(FingerMiniGame.instance);
-                        int charIndex = DisplayToCharacter[cursor];
-                        string name = CharacterNames[charIndex];
+                        string name = GetComparisonCharacterName(cursor);
 
-                        SpeechManager.Announce(
-                            L.Get("fingerprint.comparison_state", name),
-                            TextType.Investigation
-                        );
-                        return;
+                        if (name != null)
+                        {
+                            SpeechManager.Announce(
+                                L.Get("fingerprint.comparison_state", name),
+                                TextType.Investigation
+                            );
+                            return;
+                        }
                     }
                 }
                 catch
