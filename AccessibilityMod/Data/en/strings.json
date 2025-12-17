@@ -71,6 +71,7 @@
   "navigation.examined_suffix": "(examined)",
   "navigation.examined_remaining": "{0} examined, {1} remaining.",
   "navigation.unexamined_list": "Unexamined:",
+  "navigation.use_e_present": "Press E to present",
 
   "_section_investigation": "=== Investigation Mode ===",
   "investigation.mode_entry": "Investigation mode. {0} points of interest.",

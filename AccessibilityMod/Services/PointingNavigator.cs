@@ -76,7 +76,8 @@ namespace AccessibilityMod.Services
                     + L.Get("navigation.x_target_areas", _points.Count)
                     + ". "
                     + L.Get("navigation.use_brackets_navigate")
-                    + ", E to present.";
+                    + ", "
+                    + L.Get("navigation.use_e_present");
                 SpeechManager.Announce(message, TextType.Trial);
             }
             else
