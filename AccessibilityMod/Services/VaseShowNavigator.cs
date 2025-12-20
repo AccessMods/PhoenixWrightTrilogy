@@ -207,7 +207,7 @@ namespace AccessibilityMod.Services
 
             if (Math.Abs(yDiff) > SafeRange.y)
             {
-                string direction = yDiff > 0 ? L.Get("key.m") : L.Get("key.b");
+                string direction = yDiff < 0 ? L.Get("key.m") : L.Get("key.b");
                 hint += L.Get("vase_show.y_needs", (int)Math.Abs(yDiff), direction) + " ";
             }
             else

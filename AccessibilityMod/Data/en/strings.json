@@ -176,7 +176,7 @@
   "vase_show.rotation_xyz": "Rotation: X {0}, Y {1}, Z {2}.",
   "vase_show.very_close": "Very close!",
   "vase_show.getting_closer": "Getting closer.",
-  "vase_show.all_aligned": "All axes aligned! Press Enter to submit.",
+  "vase_show.all_aligned": "All axes aligned! Press E to submit.",
   "vase_show.x_correct": "X correct.",
   "vase_show.y_correct": "Y correct.",
   "vase_show.z_correct": "Z correct.",
@@ -238,6 +238,19 @@
   "dying_message.dot.m_bottom": "M bottom",
   "dying_message.dot.a_bottom_left": "A bottom-left",
   "dying_message.dot.a_bottom_right": "A bottom-right",
+
+  "_comment_dying_message_jp": "Japanese/Chinese version - spells 茜 (Akane)",
+  "dying_message.puzzle_start_jp": "Dying message puzzle. {0} dots. Connect dots to spell 茜 (Akane). Use [ and ] to navigate dots, Enter on a dot to start a line, Enter on another dot to connect. Backspace to undo last line. Press H for hint.",
+  "dying_message.hint_jp_start": "Spell 茜 (Akane) by connecting dots. Start with the grass radical 艹 at the top: connect dots 1-6, 2-7, and 3-5.",
+  "dying_message.hint_jp_grass_radical": "Continue the 艹 radical and start 西 below. Connect dot 4-10, then work on the lower component.",
+  "dying_message.hint_jp_west_component": "Complete the 西 component: connect dots 8-13, 9-11, 11-15, 12-14, and 14-15.",
+  "dying_message.hint_jp_almost_done": "{0} lines drawn. Almost done! Complete any remaining connections in 茜.",
+
+  "_comment_dying_message_kr": "Korean version - character unknown, position-based",
+  "dying_message.puzzle_start_kr": "Dying message puzzle. {0} dots. Connect dots to spell the name. Use [ and ] to navigate dots, Enter on a dot to start a line, Enter on another dot to connect. Backspace to undo last line. Press H for hint.",
+  "dying_message.hint_kr_start": "Connect the dots to spell the name. Required connections: 1-2, 3-4, 5-6, 7-8, 9-10, 10-11, 12-13.",
+  "dying_message.hint_kr_continue": "{0} lines drawn. Continue connecting adjacent dot pairs vertically.",
+  "dying_message.hint_kr_almost_done": "{0} lines drawn. Almost done! Complete the remaining vertical connections.",
 
   "_section_bug_sweeper": "=== Bug Sweeper ===",
   "bug_sweeper.mode_entry": "Signal detector mode.{0} Move cursor to scan for listening devices.{1}",

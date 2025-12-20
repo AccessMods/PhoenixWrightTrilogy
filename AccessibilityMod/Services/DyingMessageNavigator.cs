@@ -48,6 +48,73 @@ namespace AccessibilityMod.Services
             new int[] { 7, 8 }, // A crossbar
         };
 
+        // Japanese/Chinese dot descriptions for 茜 (Akane) - 15 dots
+        private static readonly string[] DotDescriptions_JP = new string[]
+        {
+            "茜 top center", // 0 - connects to 5
+            "艹 left", // 1 - connects to 6
+            "艹 right", // 2 - connects to 4
+            "西 top-right", // 3 - connects to 7 or 9
+            "艹 center", // 4
+            "茜 middle-left", // 5
+            "艹 bottom", // 6
+            "西 upper-inner", // 7 - connects to 9, 12
+            "西 center", // 8 - connects to 10
+            "西 left", // 9
+            "西 bottom-left", // 10 - connects to 14
+            "西 right", // 11 - connects to 13
+            "西 inner-bottom", // 12
+            "西 bottom-right", // 13 - connects to 14
+            "茜 bottom", // 14
+        };
+
+        // Required connections for Japanese/Chinese 茜 (Akane) - 9 required connections
+        private static readonly int[][] RequiredConnections_JP = new int[][]
+        {
+            new int[] { 0, 5 }, // 艹 left vertical
+            new int[] { 1, 6 }, // 艹 right vertical
+            new int[] { 2, 4 }, // 艹 connecting stroke
+            new int[] { 3, 9 }, // 西 left diagonal (alt: 3-7 + 7-9)
+            new int[] { 7, 12 }, // 西 inner stroke
+            new int[] { 8, 10 }, // 西 bottom-left
+            new int[] { 10, 14 }, // 西 bottom stroke
+            new int[] { 11, 13 }, // 西 right side
+            new int[] { 13, 14 }, // 西 bottom-right
+        };
+
+        // Korean dot descriptions (15 dots) - position-based
+        private static readonly string[] DotDescriptions_KR = new string[]
+        {
+            "upper-left 1", // 0
+            "lower-left 1", // 1
+            "upper-left 2", // 2
+            "lower-left 2", // 3
+            "upper-center 1", // 4
+            "lower-center 1", // 5
+            "center 1", // 6
+            "bottom 1", // 7
+            "center 2", // 8
+            "lower-center 2", // 9
+            "lower-center 3", // 10
+            "upper-right", // 11
+            "center-right", // 12
+            "lower-right 1", // 13
+            "lower-right 2", // 14
+        };
+
+        // Required connections for Korean - 7 required connections (8th optional)
+        private static readonly int[][] RequiredConnections_KR = new int[][]
+        {
+            new int[] { 0, 1 }, // Stroke 1
+            new int[] { 2, 3 }, // Stroke 2
+            new int[] { 4, 5 }, // Stroke 3
+            new int[] { 6, 7 }, // Stroke 4
+            new int[] { 8, 9 }, // Stroke 5
+            new int[] { 9, 10 }, // Stroke 6
+            new int[] { 11, 12 }, // Stroke 7
+            // 13-14 is optional
+        };
+
         /// <summary>
         /// Checks if the dying message minigame is active.
         /// </summary>
@@ -105,10 +172,23 @@ namespace AccessibilityMod.Services
             _currentDotIndex = -1;
             _dotCount = GetDotCount();
 
-            SpeechManager.Announce(
-                L.Get("dying_message.puzzle_start", _dotCount),
-                TextType.Investigation
-            );
+            string startMessage;
+            switch (GSStatic.global_work_.language)
+            {
+                case Language.JAPAN:
+                case Language.CHINA_S:
+                case Language.CHINA_T:
+                    startMessage = L.Get("dying_message.puzzle_start_jp", _dotCount);
+                    break;
+                case Language.KOREA:
+                    startMessage = L.Get("dying_message.puzzle_start_kr", _dotCount);
+                    break;
+                default:
+                    startMessage = L.Get("dying_message.puzzle_start", _dotCount);
+                    break;
+            }
+
+            SpeechManager.Announce(startMessage, TextType.Investigation);
         }
 
         private static void OnEnd()
@@ -253,8 +333,16 @@ namespace AccessibilityMod.Services
                     case Language.JAPAN:
                     case Language.CHINA_S:
                     case Language.CHINA_T:
+                        if (index >= 0 && index < DotDescriptions_JP.Length)
+                        {
+                            return DotDescriptions_JP[index];
+                        }
+                        return L.Get("dying_message.position", index + 1);
                     case Language.KOREA:
-                        // For non-English, just return position
+                        if (index >= 0 && index < DotDescriptions_KR.Length)
+                        {
+                            return DotDescriptions_KR[index];
+                        }
                         return L.Get("dying_message.position", index + 1);
                     default:
                         if (index >= 0 && index < DotDescriptions_US.Length)
@@ -309,11 +397,12 @@ namespace AccessibilityMod.Services
                     case Language.JAPAN:
                     case Language.CHINA_S:
                     case Language.CHINA_T:
+                        hint = GetJapaneseChineseHint(lineCount);
+                        break;
                     case Language.KOREA:
-                        hint = L.Get("dying_message.hint_lines_drawn", lineCount);
+                        hint = GetKoreanHint(lineCount);
                         break;
                     default:
-                        // English hint
                         hint = GetEnglishHint(lineCount);
                         break;
                 }
@@ -342,6 +431,52 @@ namespace AccessibilityMod.Services
             else if (lineCount < 6)
             {
                 return L.Get("dying_message.hint_draw_a");
+            }
+            else
+            {
+                return L.Get("dying_message.hint_done", lineCount);
+            }
+        }
+
+        private static string GetJapaneseChineseHint(int lineCount)
+        {
+            // 茜 (Akane) requires 9 lines
+            if (lineCount == 0)
+            {
+                return L.Get("dying_message.hint_jp_start");
+            }
+            else if (lineCount < 3)
+            {
+                return L.Get("dying_message.hint_jp_grass_radical");
+            }
+            else if (lineCount < 6)
+            {
+                return L.Get("dying_message.hint_jp_west_component");
+            }
+            else if (lineCount < 9)
+            {
+                return L.Get("dying_message.hint_jp_almost_done", lineCount);
+            }
+            else
+            {
+                return L.Get("dying_message.hint_done", lineCount);
+            }
+        }
+
+        private static string GetKoreanHint(int lineCount)
+        {
+            // Korean requires 7 lines (8th optional)
+            if (lineCount == 0)
+            {
+                return L.Get("dying_message.hint_kr_start");
+            }
+            else if (lineCount < 4)
+            {
+                return L.Get("dying_message.hint_kr_continue", lineCount);
+            }
+            else if (lineCount < 7)
+            {
+                return L.Get("dying_message.hint_kr_almost_done", lineCount);
             }
             else
             {
