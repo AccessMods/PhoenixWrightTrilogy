@@ -525,18 +525,33 @@ namespace AccessibilityMod.Patches
                     return false;
 
                 // This is the exit game confirmation dialog
-                // Get the message text from message_text_list_
+                // Schedule delayed announcement because the message text is set AFTER playCursor()
+                CoroutineRunner.Instance?.ScheduleDelayedAnnouncement(
+                    0.1f, // Small delay to let the message be set
+                    () => GetExitGameDialogMessage(mainTitle),
+                    TextType.Menu
+                );
+                return true;
+            }
+            catch { }
+            return false;
+        }
+
+        private static string GetExitGameDialogMessage(mainTitleCtrl mainTitle)
+        {
+            try
+            {
                 var messageField = typeof(mainTitleCtrl).GetField(
                     "message_text_list_",
                     System.Reflection.BindingFlags.NonPublic
                         | System.Reflection.BindingFlags.Instance
                 );
                 if (messageField == null)
-                    return false;
+                    return null;
 
                 var messageList = messageField.GetValue(mainTitle) as List<UnityEngine.UI.Text>;
                 if (messageList == null || messageList.Count == 0)
-                    return false;
+                    return null;
 
                 string message = "";
                 foreach (var text in messageList)
@@ -549,14 +564,12 @@ namespace AccessibilityMod.Patches
                     }
                 }
 
-                if (!Core.Net35Extensions.IsNullOrWhiteSpace(message))
-                {
-                    SpeechManager.Announce(message, TextType.Menu);
-                    return true;
-                }
+                return Core.Net35Extensions.IsNullOrWhiteSpace(message) ? null : message;
             }
-            catch { }
-            return false;
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
