@@ -1,0 +1,7 @@
+A beige "Lost Item Report" form containing handwritten entries is displayed against a black background.
+
+The document's title, "- Lost Item Report -", is printed in a bold serif font at the top center. In the upper right corner, the "Date:" field is filled with the handwritten text "2/21".
+
+A grid organizes the specific details. The first row, labeled "Date lost", repeats the date "2/21". The second row, labeled "Name", contains the handwritten name "Bruce Goodman". The third row, labeled "ID", shows the number "5" followed by an incomplete or scribbled character that resembles a "7" with a horizontal crossbar.
+
+The row labeled "Item lost" is empty. The bottom section of the form is headed "Status report" and contains a large blank space with no writing. Faint, cloudy discolorations are visible in the paper's texture throughout the document.
