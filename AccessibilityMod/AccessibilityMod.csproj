@@ -47,10 +47,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Message Text="--- Copying mod DLLs to game Mods folder ---" Importance="high" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GamePath)\Mods" />
-    <Copy
-      SourceFiles="$(TargetDir)MelonAccessibilityLib.dll"
-      DestinationFolder="$(GamePath)\Mods"
-    />
+    <Copy SourceFiles="$(TargetDir)MelonAccessibilityLib.dll" DestinationFolder="$(GamePath)" />
   </Target>
   <!--Copy files from AccessibilityMod/Data/en to GAMEPATH/UserData/AccessibilityMod/en-->
   <Target Name="CopyDataFiles" AfterTargets="PostBuildEvent">
