@@ -24,10 +24,6 @@ namespace AccessibilityMod.Patches
         internal static string _lastAnnouncedText = "";
         private static int _lastSpeakerId = -1;
 
-        // Track whether an arrow has appeared since board opened
-        // Used to detect transition text (which never shows an arrow)
-        private static bool _arrowAppearedSinceBoardOpened = false;
-
         // Regex for detecting button placeholders (multiple spaces or full-width spaces)
         private static readonly Regex SpacePlaceholderRegex = new Regex(
             @"[\u3000]+| {3,}",
@@ -53,8 +49,6 @@ namespace AccessibilityMod.Patches
                 if (in_arrow)
                 {
                     // Normal case: arrow appearing means text is complete
-                    // Mark that arrow appeared so delayed transition capture knows to skip
-                    _arrowAppearedSinceBoardOpened = true;
                     TryOutputDialogue();
                 }
                 else if (IsInCrossExaminationMode())
@@ -179,48 +173,7 @@ namespace AccessibilityMod.Patches
         #region Message Board Hooks
 
         /// <summary>
-        /// Hook BEFORE message board closes to capture any pending dialogue.
-        /// This catches cases where the board closes (e.g., court record opens)
-        /// before ClearText is called.
-        /// </summary>
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(messageBoardCtrl), "board")]
-        public static void Board_Prefix(messageBoardCtrl __instance, bool in_board, bool in_mes)
-        {
-            try
-            {
-                // Only capture when board is about to close and is currently active
-                if (!in_board && __instance.body_active)
-                {
-                    // Skip dialogue capture when in court record, evidence details, or 3D evidence mode.
-                    // These modes reuse the message board but the text is stale from the main game.
-                    // Navigating within these modes (e.g., opening evidence details) triggers
-                    // board state changes that would incorrectly announce old dialogue.
-                    if (
-                        AccessibilityState.IsInCourtRecordMode()
-                        || AccessibilityState.IsInEvidenceDetailsMode()
-                        || AccessibilityState.IsIn3DEvidenceMode()
-                    )
-                    {
-                        return;
-                    }
-
-                    // Capture any text before the board closes
-                    TryOutputDialogue();
-                }
-            }
-            catch (Exception ex)
-            {
-                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
-                    $"Error in Board prefix patch: {ex.Message}"
-                );
-            }
-        }
-
-        /// <summary>
         /// Hook when message board opens/closes. Reset tracking when closed.
-        /// Also handles episode transition text ("To be continued", etc.) which
-        /// uses a different rendering path without arrows.
         /// </summary>
         [HarmonyPostfix]
         [HarmonyPatch(typeof(messageBoardCtrl), "board")]
@@ -234,16 +187,7 @@ namespace AccessibilityMod.Patches
                     _lastAnnouncedText = "";
                     _lastSpeakerId = -1;
                 }
-                else
-                {
-                    // Board opening - reset arrow tracking and schedule delayed capture
-                    // for transition text (which doesn't show arrows)
-                    _arrowAppearedSinceBoardOpened = false;
-
-                    // Schedule a delayed capture to catch transition text like "To be continued"
-                    // This text appears 1-2 frames after board opens, with no arrow
-                    CoroutineRunner.Instance?.StartCoroutine(DelayedTransitionTextCapture());
-                }
+                // else: Board opening - no action needed
             }
             catch (Exception ex)
             {
@@ -253,71 +197,63 @@ namespace AccessibilityMod.Patches
             }
         }
 
+        #endregion
+
+        #region Fade Hooks
+
         /// <summary>
-        /// Check if the episode release screen is currently active and scrolling is done.
+        /// Hook fadeCtrl.play to capture transition text before screen fades to black.
+        /// Transition text like "To be continued" appears without arrows and the scene
+        /// transitions immediately after. By hooking the fade, we catch this text at
+        /// the moment the screen starts going dark.
         /// </summary>
-        private static bool IsEpisodeReleaseActive()
+        [HarmonyPrefix]
+        [HarmonyPatch(
+            typeof(fadeCtrl),
+            "play",
+            typeof(uint),
+            typeof(uint),
+            typeof(uint),
+            typeof(uint)
+        )]
+        public static void FadePlay_Prefix(uint in_status)
         {
             try
             {
-                var episodeRelease = episodeReleaseCtrl.instance;
-                return episodeRelease != null
-                    && episodeRelease.is_play
-                    && !episodeRelease.is_scroll;
+                // Status 1 = FADE_IN (screen going black)
+                // This is when episode transitions typically occur
+                if (in_status != 1)
+                    return;
+
+                var ctrl = messageBoardCtrl.instance;
+                if (ctrl == null || !ctrl.body_active)
+                    return;
+
+                // Transition text never has a speaker name plate
+                bool namePlateVisible = false;
+                try
+                {
+                    namePlateVisible = ctrl.sprite_name != null && ctrl.sprite_name.active;
+                }
+                catch { }
+
+                if (namePlateVisible)
+                    return;
+
+                string text = CombineLines(ctrl);
+                string cleanedText = TextCleaner.Clean(text);
+
+                if (!Net35Extensions.IsNullOrWhiteSpace(cleanedText) && text != _lastAnnouncedText)
+                {
+                    _lastAnnouncedText = text;
+                    SpeechManager.Output("", text, GameTextType.Narrator);
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Delayed capture for transition text like "To be continued".
-        /// Waits a few frames for text to render, then announces if no arrow appeared.
-        /// This is more efficient than a continuous monitor - just a single check after delay.
-        /// </summary>
-        private static System.Collections.IEnumerator DelayedTransitionTextCapture()
-        {
-            // Wait 3 frames for text to render (text appears at frame 1-2)
-            for (int i = 0; i < 3; i++)
-            {
-                yield return null;
-            }
-
-            // If an arrow appeared, normal dialogue handling took care of it
-            if (_arrowAppearedSinceBoardOpened)
-                yield break;
-
-            // Check if board is still active with unannounced text
-            var ctrl = messageBoardCtrl.instance;
-            if (ctrl == null || !ctrl.body_active)
-                yield break;
-
-            // Transition text never has a speaker name plate - skip if speaker is shown
-            // This filters out normal dialogue that somehow got here
-            bool namePlateVisible = false;
-            try
-            {
-                namePlateVisible = ctrl.sprite_name != null && ctrl.sprite_name.active;
-            }
-            catch { }
-
-            if (namePlateVisible)
-                yield break;
-
-            string text = CombineLines(ctrl);
-            string cleanedText = TextCleaner.Clean(text);
-
-            // Require minimum length to avoid partial character-by-character renders
-            // Transition text like "To be continued." is 17+ chars
-            if (
-                !Net35Extensions.IsNullOrWhiteSpace(cleanedText)
-                && cleanedText.Length >= 10
-                && text != _lastAnnouncedText
-            )
-            {
-                _lastAnnouncedText = text;
-                SpeechManager.Output("", text, GameTextType.Narrator);
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in FadePlay patch: {ex.Message}"
+                );
             }
         }
 
@@ -440,6 +376,18 @@ namespace AccessibilityMod.Patches
                     || req == SubWindow.Req.IDLE
                     || req == SubWindow.Req.STATUS_SETU
                     || req.ToString().Contains("EXIT")
+                )
+                {
+                    return;
+                }
+
+                // Skip when already in court record, evidence details, or 3D evidence mode.
+                // The message board text is stale in these modes - capturing here would
+                // re-announce old dialogue (e.g., when presenting evidence from court record).
+                if (
+                    AccessibilityState.IsInCourtRecordMode()
+                    || AccessibilityState.IsInEvidenceDetailsMode()
+                    || AccessibilityState.IsIn3DEvidenceMode()
                 )
                 {
                     return;
