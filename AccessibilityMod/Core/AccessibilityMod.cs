@@ -110,6 +110,7 @@ namespace AccessibilityMod.Core
 
         private void UpdateNavigators()
         {
+            HotspotNavigator.Update();
             PointingNavigator.Update();
             LuminolNavigator.Update();
             VasePuzzleNavigator.Update();

@@ -11,6 +11,7 @@ namespace AccessibilityMod.Services
     {
         private static List<HotspotInfo> _hotspots = new List<HotspotInfo>();
         private static int _currentIndex = -1;
+        private static bool _wasActive = false;
 
         public class HotspotInfo
         {
@@ -20,6 +21,33 @@ namespace AccessibilityMod.Services
             public float CenterY;
             public bool IsExamined;
             public string Description;
+        }
+
+        /// <summary>
+        /// Called each frame to detect when investigation mode starts/ends.
+        /// </summary>
+        public static void Update()
+        {
+            bool isActive = AccessibilityState.IsInInvestigationMode();
+
+            if (isActive && !_wasActive)
+            {
+                // Investigation mode just started
+                OnInvestigationStart();
+            }
+            else if (!isActive && _wasActive)
+            {
+                // Investigation mode just ended
+                OnInvestigationEnd();
+            }
+
+            _wasActive = isActive;
+        }
+
+        private static void OnInvestigationEnd()
+        {
+            _hotspots.Clear();
+            _currentIndex = -1;
         }
 
         public static void RefreshHotspots()

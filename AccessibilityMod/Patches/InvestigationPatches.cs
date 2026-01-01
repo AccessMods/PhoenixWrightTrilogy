@@ -23,7 +23,8 @@ namespace AccessibilityMod.Patches
                 _lastCursorSprite = -1;
 
                 AccessibilityState.SetMode(AccessibilityState.GameMode.Investigation);
-                HotspotNavigator.OnInvestigationStart();
+                // Note: OnInvestigationStart() is now called from HotspotNavigator.Update()
+                // which reliably detects mode transitions via AccessibilityState.IsInInvestigationMode()
             }
             catch (Exception ex)
             {
