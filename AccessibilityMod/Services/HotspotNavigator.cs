@@ -58,7 +58,7 @@ namespace AccessibilityMod.Services
             // Remember the current hotspot's identity before clearing
             uint? previousMessageId = null;
             int? previousDataIndex = null;
-            if (_hotspots.Count > 0 && _currentIndex < _hotspots.Count)
+            if (_hotspots.Count > 0 && _currentIndex >= 0 && _currentIndex < _hotspots.Count)
             {
                 previousMessageId = _hotspots[_currentIndex].MessageId;
                 previousDataIndex = _hotspots[_currentIndex].DataIndex;
