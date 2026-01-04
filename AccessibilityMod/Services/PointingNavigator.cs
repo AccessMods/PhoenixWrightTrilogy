@@ -249,7 +249,15 @@ namespace AccessibilityMod.Services
                 return;
             }
 
-            _currentIndex = (_currentIndex - 1 + _points.Count) % _points.Count;
+            // When starting from -1 (no selection), go to the last item
+            if (_currentIndex < 0)
+            {
+                _currentIndex = _points.Count - 1;
+            }
+            else
+            {
+                _currentIndex = (_currentIndex - 1 + _points.Count) % _points.Count;
+            }
             AnnounceCurrentPoint();
             MoveCursorToCurrentPoint();
         }

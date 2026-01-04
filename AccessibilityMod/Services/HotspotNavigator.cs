@@ -46,8 +46,11 @@ namespace AccessibilityMod.Services
 
         private static void OnInvestigationEnd()
         {
-            _hotspots.Clear();
-            _currentIndex = -1;
+            // Don't clear _hotspots or _currentIndex here.
+            // RefreshHotspots() preserves the current position by reading
+            // _hotspots[_currentIndex] before rebuilding the list.
+            // Clearing here would lose the position when investigation mode
+            // temporarily ends (e.g., during hotspot examination dialogue).
         }
 
         public static void RefreshHotspots()
@@ -197,7 +200,15 @@ namespace AccessibilityMod.Services
                 return;
             }
 
-            _currentIndex = (_currentIndex - 1 + _hotspots.Count) % _hotspots.Count;
+            // When starting from -1 (no selection), go to the last item
+            if (_currentIndex < 0)
+            {
+                _currentIndex = _hotspots.Count - 1;
+            }
+            else
+            {
+                _currentIndex = (_currentIndex - 1 + _hotspots.Count) % _hotspots.Count;
+            }
             AnnounceCurrentHotspot();
             MoveCursorToCurrentHotspot();
         }

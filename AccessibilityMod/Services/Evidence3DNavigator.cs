@@ -258,7 +258,16 @@ namespace AccessibilityMod.Services
                 return;
             }
 
-            _currentHotspotIndex = (_currentHotspotIndex - 1 + _hotspots.Count) % _hotspots.Count;
+            // When starting from -1 (no selection), go to the last item
+            if (_currentHotspotIndex < 0)
+            {
+                _currentHotspotIndex = _hotspots.Count - 1;
+            }
+            else
+            {
+                _currentHotspotIndex =
+                    (_currentHotspotIndex - 1 + _hotspots.Count) % _hotspots.Count;
+            }
             NavigateToCurrentHotspot();
         }
 

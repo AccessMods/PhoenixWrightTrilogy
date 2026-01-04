@@ -429,7 +429,15 @@ namespace AccessibilityMod.Services
             // If all are discovered, just go to previous
             if (!foundUndiscovered)
             {
-                _currentIndex = (_currentIndex - 1 + _hotspots.Count) % _hotspots.Count;
+                // When starting from -1 (no selection), go to the last item
+                if (_currentIndex < 0)
+                {
+                    _currentIndex = _hotspots.Count - 1;
+                }
+                else
+                {
+                    _currentIndex = (_currentIndex - 1 + _hotspots.Count) % _hotspots.Count;
+                }
             }
 
             NavigateToCurrentHotspot();
