@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AccessibilityMod.Core;
+using AccessibilityMod.Utilities;
 using MelonAccessibilityLib;
 using UnityEngine;
 
@@ -12,6 +13,10 @@ namespace AccessibilityMod.Services
         private static List<HotspotInfo> _hotspots = new List<HotspotInfo>();
         private static int _currentIndex = -1;
         private static bool _wasActive = false;
+        private static bool _lastIsSlider = false;
+        private static float _lastStableBgPosX = float.NaN;
+        // Max X of hotspots BEFORE any half-screen filtering (used to detect wide scenes reliably)
+        private static float _lastUnfilteredHotspotMaxX = 1920f;
 
         public class HotspotInfo
         {
@@ -39,6 +44,43 @@ namespace AccessibilityMod.Services
             {
                 // Investigation mode just ended
                 OnInvestigationEnd();
+            }
+
+            if (isActive)
+            {
+                try
+                {
+                    var bg = bgCtrl.instance;
+                    if (bg != null)
+                    {
+                        float x = bg.bg_pos_x;
+                        // When slider finishes (half-screen pan completes), refresh hotspot list so it
+                        // only contains the current visible half.
+                        bool isSlider = bg.is_slider;
+                        if (float.IsNaN(_lastStableBgPosX)) _lastStableBgPosX = x;
+                        if (_lastIsSlider && !isSlider)
+                        {
+                            if (Math.Abs(x - _lastStableBgPosX) > 0.5f)
+                            {
+                                _lastStableBgPosX = x;
+                                RefreshHotspots();
+                                // Announce side, hotspot count, and unexamined count after switching
+                                string side = x < 960f 
+                                    ? L.Get("investigation.side_left") 
+                                    : L.Get("investigation.side_right");
+                                int unexamined = _hotspots.Count(h => !h.IsExamined);
+                                string message = L.Get("investigation.scene_switched_info", side, _hotspots.Count, unexamined);
+                                SpeechManager.Announce(message, GameTextType.Investigation);
+                            }
+                        }
+                        if (!isSlider)
+                        {
+                            _lastStableBgPosX = x;
+                        }
+                        _lastIsSlider = isSlider;
+                    }
+                }
+                catch { }
             }
 
             _wasActive = isActive;
@@ -115,6 +157,60 @@ namespace AccessibilityMod.Services
                             Description = L.Get("navigation.point_position", i + 1, posDesc),
                         }
                     );
+                }
+
+                // Capture max X BEFORE filtering (so OnInvestigationStart can know this is a wide scene)
+                try
+                {
+                    _lastUnfilteredHotspotMaxX = _hotspots.Count > 0 ? _hotspots.Max(h => h.CenterX) : 1920f;
+                    if (_lastUnfilteredHotspotMaxX < 1920f) _lastUnfilteredHotspotMaxX = 1920f;
+                }
+                catch
+                {
+                    _lastUnfilteredHotspotMaxX = 1920f;
+                }
+
+                // Filter to the currently visible half when the background supports sliding/panning.
+                // This MUST be based on game state (bg_pos_x), not mod-derived cursor coordinates.
+                {
+                    float bgPosX = 0f;
+                    float bgWidth = 1920f;
+                    int bgNo = -1;
+                    bool canSlide = false;
+                    try
+                    {
+                        if (bgCtrl.instance != null)
+                        {
+                            bgPosX = bgCtrl.instance.bg_pos_x;
+                            bgNo = bgCtrl.instance.bg_no;
+                            if (bgCtrl.instance.sprite_data != null)
+                            {
+                                bgWidth = bgCtrl.instance.sprite_data.rect.width;
+                            }
+                        }
+                    }
+                    catch { }
+                    try { canSlide = GSMain_TanteiPart.IsBGSlide(bgNo); } catch { }
+
+                    // Some versions/scenes don't populate bgCtrl.sprite_data reliably.
+                    // Derive an effective width from the inspection data coordinates (game data),
+                    // so half-screen filtering still works on large scenes.
+                    try
+                    {
+                        if (_hotspots.Count > 0)
+                        {
+                            float dataMaxX = _hotspots.Max(h => h.CenterX);
+                            if (dataMaxX > bgWidth) bgWidth = dataMaxX;
+                        }
+                    }
+                    catch { }
+
+                    if (canSlide && bgWidth > 1920f)
+                    {
+                        float minX = bgPosX;
+                        float maxX = bgPosX + 1920f;
+                        _hotspots = _hotspots.Where(h => h.CenterX >= minX && h.CenterX <= maxX).ToList();
+                    }
                 }
 
                 // Sort by position: top-to-bottom, then left-to-right
@@ -395,12 +491,68 @@ namespace AccessibilityMod.Services
             if (_hotspots.Count > 0)
             {
                 int unexamined = _hotspots.Count(h => !h.IsExamined);
-                string message = L.Get("investigation.mode_start", _hotspots.Count);
-                if (unexamined < _hotspots.Count)
+                
+                // Start with mode name
+                string message = L.Get("investigation.mode_start");
+                
+                // Check if we need Q-switch hint and determine current side
+                bool shouldHintQ = false;
+                string sideHint = "";
+                try
+                {
+                    int bgNo = -1;
+                    float bgPosX = 0f;
+                    bool canSlide = false;
+                    float effectiveWidth = 1920f;
+                    try
+                    {
+                        if (bgCtrl.instance != null)
+                        {
+                            bgNo = bgCtrl.instance.bg_no;
+                            bgPosX = bgCtrl.instance.bg_pos_x;
+                        }
+                    }
+                    catch { }
+                    try { canSlide = GSMain_TanteiPart.IsBGSlide(bgNo); } catch { }
+                    // Use the unfiltered max X captured in RefreshHotspots() (do not use filtered list)
+                    effectiveWidth = _lastUnfilteredHotspotMaxX;
+
+                    shouldHintQ = canSlide && effectiveWidth > 1920f;
+
+                    if (shouldHintQ)
+                    {
+                        // Determine which side we're currently on
+                        // bg_pos_x < 960 means left side (showing X coordinates 0-1920)
+                        // bg_pos_x >= 960 means right side (showing X coordinates 1920+)
+                        sideHint = bgPosX < 960f 
+                            ? L.Get("investigation.current_side_left") 
+                            : L.Get("investigation.current_side_right");
+                        message += " " + sideHint;
+                    }
+                }
+                catch
+                {
+                    // ignore
+                }
+                
+                // Add points count
+                message += " " + L.Get("investigation.points_count", _hotspots.Count);
+                
+                // Add unexamined count if any
+                if (unexamined > 0)
                 {
                     message += " " + L.Get("investigation.unexamined_count", unexamined);
                 }
+                
+                // Add controls hint
                 message += " " + L.Get("investigation.controls_hint");
+                
+                // Add Q-switch hint if needed
+                if (shouldHintQ)
+                {
+                    message += " " + L.Get("investigation.press_q_switch_half");
+                }
+
                 SpeechManager.Announce(message, GameTextType.Investigation);
             }
             else
