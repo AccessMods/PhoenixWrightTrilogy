@@ -1,4 +1,4 @@
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 
 namespace AccessibilityMod.Core
 {

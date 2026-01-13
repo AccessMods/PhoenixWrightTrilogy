@@ -3,7 +3,7 @@ using System.Text;
 using AccessibilityMod.Core;
 using AccessibilityMod.Services;
 using HarmonyLib;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine.UI;
 using L = AccessibilityMod.Services.L;
 

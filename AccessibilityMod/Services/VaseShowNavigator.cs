@@ -1,6 +1,6 @@
 using System;
 using AccessibilityMod.Core;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Services

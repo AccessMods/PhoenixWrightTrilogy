@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using AccessibilityMod.Core;
 using AccessibilityMod.Services;
 using HarmonyLib;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Patches

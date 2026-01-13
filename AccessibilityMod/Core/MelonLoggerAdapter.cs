@@ -1,5 +1,5 @@
-using MelonAccessibilityLib;
 using MelonLoader;
+using UnityAccessibilityLib;
 
 namespace AccessibilityMod.Core
 {

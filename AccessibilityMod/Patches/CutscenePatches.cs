@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using AccessibilityMod.Core;
 using HarmonyLib;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 
 namespace AccessibilityMod.Patches
 {

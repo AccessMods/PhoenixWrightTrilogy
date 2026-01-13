@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AccessibilityMod.Core;
 using AccessibilityMod.Utilities;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Services

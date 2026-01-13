@@ -1,7 +1,7 @@
 using System;
 using AccessibilityMod.Patches;
 using AccessibilityMod.Services;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Core

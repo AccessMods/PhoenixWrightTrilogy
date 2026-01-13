@@ -3,7 +3,7 @@ using AccessibilityMod.Core;
 using AccessibilityMod.Services;
 using AccessibilityMod.Utilities;
 using HarmonyLib;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 
 namespace AccessibilityMod.Patches
 {

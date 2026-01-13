@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using AccessibilityMod.Patches;
 using AccessibilityMod.Services;
-using MelonAccessibilityLib;
 using MelonLoader;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Core

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using AccessibilityMod.Core;
-using MelonAccessibilityLib;
+using UnityAccessibilityLib;
 using UnityEngine;
 
 namespace AccessibilityMod.Services
