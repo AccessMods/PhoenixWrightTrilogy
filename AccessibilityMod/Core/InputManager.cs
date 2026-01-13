@@ -134,8 +134,8 @@ namespace AccessibilityMod.Core
 
         private static void HandleVasePuzzleInput()
         {
-            // H - Get hint for current step
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - Get hint for current step
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 VasePuzzleNavigator.AnnounceHint();
             }
@@ -154,8 +154,8 @@ namespace AccessibilityMod.Core
                 FingerprintNavigator.NavigateNext();
             }
 
-            // H - Get hint for current phase
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - Get hint for current phase
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 FingerprintNavigator.AnnounceHint();
             }
@@ -174,8 +174,8 @@ namespace AccessibilityMod.Core
                 VideoTapeNavigator.NavigateToNextTarget();
             }
 
-            // H - Get hint for current viewing
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - Get hint for current viewing
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 VideoTapeNavigator.AnnounceHint();
             }
@@ -203,8 +203,8 @@ namespace AccessibilityMod.Core
                 DyingMessageNavigator.NavigateNext();
             }
 
-            // H - Get hint for spelling EMA
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - Get hint for spelling EMA
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 DyingMessageNavigator.AnnounceHint();
             }
@@ -212,8 +212,8 @@ namespace AccessibilityMod.Core
 
         private static void HandleBugSweeperInput()
         {
-            // H - Announce current state/hint
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - Announce current state/hint
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 BugSweeperNavigator.AnnounceState();
             }
@@ -221,8 +221,8 @@ namespace AccessibilityMod.Core
 
         private static void HandleVaseShowInput()
         {
-            // G - Get hint for rotation (H is used for X-axis rotation in this puzzle)
-            if (Input.GetKeyDown(KeyCode.G))
+            // F1 - Get hint for rotation
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 VaseShowNavigator.AnnounceHint();
             }
@@ -240,8 +240,8 @@ namespace AccessibilityMod.Core
                 PointingNavigator.NavigateNext();
             }
 
-            // H - List all target areas
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - List all target areas
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 PointingNavigator.AnnounceAllPoints();
             }
@@ -265,8 +265,8 @@ namespace AccessibilityMod.Core
                 HotspotNavigator.NavigateToNextUnexamined();
             }
 
-            // H - List all hotspots
-            if (Input.GetKeyDown(KeyCode.H))
+            // F1 - List all hotspots
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 HotspotNavigator.AnnounceAllHotspots();
             }

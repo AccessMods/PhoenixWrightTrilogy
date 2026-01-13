@@ -66,20 +66,20 @@ The following components are provided by the `MelonAccessibilityLib` NuGet packa
 | I     | Global                            | Announce current state/context                              |
 | [ / ] | Investigation                     | Navigate hotspots                                           |
 | U     | Investigation                     | Jump to next unexamined hotspot                             |
-| H     | Investigation                     | List all hotspots                                           |
+| F1    | Investigation                     | List all hotspots                                           |
 | [ / ] | Pointing mode                     | Navigate target areas                                       |
-| H     | Pointing mode                     | List all target areas                                       |
+| F1    | Pointing mode                     | List all target areas                                       |
 | [ / ] | Luminol mode                      | Navigate blood evidence                                     |
 | [ / ] | 3D Evidence                       | Navigate examination points                                 |
 | [ / ] | Fingerprint mode                  | Navigate fingerprint locations                              |
-| H     | Fingerprint mode                  | Get hint for current phase                                  |
+| F1    | Fingerprint mode                  | Get hint for current phase                                  |
 | [ / ] | Video tape mode                   | Navigate to targets when paused                             |
-| H     | Video tape mode                   | Get hint                                                    |
-| H     | Vase puzzle                       | Get hint for current step                                   |
-| G     | Vase show (rotation)              | Get hint (H used for X-axis rotation)                       |
+| F1    | Video tape mode                   | Get hint                                                    |
+| F1    | Vase puzzle                       | Get hint for current step                                   |
+| F1    | Vase show (rotation)              | Get hint                                                    |
 | [ / ] | Dying message                     | Navigate between dots                                       |
-| H     | Dying message                     | Get hint for spelling                                       |
-| H     | Bug sweeper                       | Announce state/hint                                         |
+| F1    | Dying message                     | Get hint for spelling                                       |
+| F1    | Bug sweeper                       | Announce state/hint                                         |
 | F1    | Orchestra mode                    | Announce controls help                                      |
 | H     | Trial (not pointing)              | Announce life gauge                                         |
 
