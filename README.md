@@ -30,12 +30,12 @@ A screen reader accessibility mod for Phoenix Wright: Ace Attorney Trilogy. The 
 
 ## Installation
 
-Each release includes two assets: an installer executable for automatic installation, and a zip file for manual installation.
+You can install this in two ways, either by using the AccessMods Installer or by downloading the release zip file and installing the mod manually.
 
 ### Automatic Installation
 
-1. Download `PWAATAccessibilityInstaller.exe` from the latest release
-2. Run the installer and follow the prompts
+1. Download `AccessModsInstaller.exe` from the latest release of the [AccessMods Installer](https://github.com/AccessMods/AccessModsInstaller/releases/latest)
+2. Run the installer, select Phoenix Wright: Ace Attorney Trilogy, and follow the prompts
 3. Launch the game
 
 ### Manual Installation
