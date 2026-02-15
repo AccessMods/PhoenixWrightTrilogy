@@ -16,7 +16,7 @@
   "mode.luminol": "Modo de spray de luminol",
   "mode.fingerprint": "Exame de impressões digitais",
   "mode.vase_puzzle": "Quebra-cabeça do vaso",
-  "mode.vase_show": "Quebra-cabeça de rotação do pote instável",
+  "mode.vase_show": "Quebra-cabeça de rotação do vaso instável",
   "mode.dying_message": "Quebra-cabeça da mensagem fatal",
   "mode.bug_sweeper": "Modo de detector de sinal",
   "mode.orchestra": "Modo orquestra",
@@ -183,7 +183,7 @@
   "vase.piece_rotation": "Peça {0}, {1} graus",
 
   "_section_vase_show": "=== Vaso Show (Rotação) ===",
-  "vase_show.start": "Quebra-cabeça de rotação do pote instável. Gire o pote para coincidir com a silhueta do Blue Badger. H e N para eixo X, M e B para eixo Y, Q e R para eixo Z. Pressione I para posição atual, F1 para dica, E para apresentar.",
+  "vase_show.start": "Quebra-cabeça de rotação do vaso instável. Gire o vaso para coincidir com a silhueta do Distintivito. H e N para eixo X, M e B para eixo Y, Q e R para eixo Z. Pressione I para posição atual, F1 para dica, E para apresentar.",
   "vase_show.rotation_xyz": "Rotação: X {0}, Y {1}, Z {2}.",
   "vase_show.very_close": "Muito perto!",
   "vase_show.getting_closer": "Chegando mais perto.",
