@@ -311,7 +311,7 @@
   "court_record.close_hint": "Pressione Backspace para fechar.",
 
   "_section_psyche_lock": "=== Tranca Psíquica ===",
-  "psyche_lock.total.one": "{0} Psicotravas",
+  "psyche_lock.total.one": "{0} Psicotrava",
   "psyche_lock.total.other": "{0} Psicotravas",
   "psyche_lock.broken": "Trava quebrada!",
   "psyche_lock.broken_remaining.one": "Trava quebrada! {0} trava restante",
