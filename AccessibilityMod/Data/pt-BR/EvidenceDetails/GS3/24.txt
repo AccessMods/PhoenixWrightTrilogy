@@ -1,9 +1,6 @@
-■Dados Meteorológicos da Montanha Águia para 7 de fevereiro■
-
-Neve, com raios ocasionais.
-
-Neve: das 19h às aprox. 22:50
-Raios: das 22h às aprox. 23h
-
-Um raio atingiu a Ponte Dusky às 22:45.
-Cerca de 30 minutos se passaram entre o início e o fim do incêndio.
+Dados Climáticos para 7 de fevereiro na Montanha Áquila
+Neve com relâmpagos ocasionais.
+Neve: de 19:00 até aproximadamente 22:50
+Relâmpagos: de 22:00 até aproximadamente 23:00
+Um relâmpago atingiu a Ponte Nevoenta às 22:45.
+O incêndio durou 30 minutos.

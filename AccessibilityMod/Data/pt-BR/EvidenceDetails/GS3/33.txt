@@ -1,0 +1,5 @@
+Um mapa aéreo atualizado dos terrenos do templo agora exibe um terceiro local, "Salão Celestial", situado na margem oeste do rio, ao norte da ponte.
+
+A geografia geral permanece consistente com o mapa anterior. O complexo do "Templo Hazakura" está localizado no canto superior esquerdo, enquanto o "Templo Interior" permanece isolado no canto inferior direito, separado pela faixa vertical de água azul do rio. A ponte suspensa de madeira ainda conecta a clareira central na margem oeste ao caminho do penhasco na margem leste.
+
+A nova adição, "Salão Celestial", é marcada por um pequeno ícone de um edifício com um telhado marrom estilo palha. Está posicionado perto da borda do rio, diretamente ao norte da entrada da ponte no lado esquerdo do mapa. Um curto caminho bege se ramifica da clareira principal perto da ponte, levando para cima até esta estrutura.
