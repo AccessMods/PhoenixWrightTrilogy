@@ -1,5 +1,3 @@
-Regras para Submeter Evidências
-
-Regra 1: Nenhuma evidência deve ser mostrada sem a aprovação do Departamento de Polícia.
-
-Regra 2: Evidência não registrada apresentada deve ser relevante para o caso em julgamento.
+Regras para Registro de Evidência:
+Regra 1: Nenhuma evidência deverá ser exibida sem a autorização do Departamento de Polícia.
+Regra 2: As evidências não registradas que forem apresentadas deverão ser relevantes para o caso julgado.
