@@ -1,5 +1,5 @@
 Um mapa esquemático de planta baixa intitulado "Mapa do Hotel (Parcial)" ilustra o layout de uma ala de hotel contendo um lobby, um salão e dois quartos de hóspedes.
 
-Na extrema direita há uma grande área circular rotulada como "Lobby". À sua esquerda, um conjunto de portas duplas conecta o lobby a uma grande sala retangular orientada verticalmente rotulada como "Salão Viola".
+Na extrema direita há uma grande área circular rotulada como "Lobby". À sua esquerda, um conjunto de portas duplas conecta o lobby a uma grande sala retangular orientada verticalmente rotulada como "Salão da Viola".
 
-À esquerda do Salão Viola, outro conjunto de portas duplas leva a um corredor horizontal estreito. Dois quartos de hóspedes retangulares flanqueiam este corredor: o quarto acima do corredor é rotulado como "Engarde" e o quarto abaixo é rotulado como "Corrida". Cada quarto de hóspede tem uma porta única que abre para o corredor compartilhado entre eles.
+À esquerda do Salão da Viola, outro conjunto de portas duplas leva a um corredor horizontal estreito. Dois quartos de hóspedes retangulares flanqueiam este corredor: o quarto acima do corredor é rotulado como "Bernardes" e o quarto abaixo é rotulado como "Paredes". Cada quarto de hóspede tem uma porta única que abre para o corredor compartilhado entre eles.

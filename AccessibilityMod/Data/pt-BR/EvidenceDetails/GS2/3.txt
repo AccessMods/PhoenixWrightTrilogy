@@ -2,6 +2,6 @@ Um mapa parcial de planta baixa detalha o layout da Mansão Fey, destacando quat
 
 A maior área, localizada no quadrante inferior esquerdo, é um espaço quadrado rotulado como "Sala de Meditação". Diretamente anexado ao centro superior desta sala está um retângulo menor, orientado verticalmente, rotulado como "Câmara de Canalização". Uma abertura na linha divisória indica uma porta conectando os dois espaços.
 
-Estendendo-se do lado superior direito da Sala de Meditação está um corredor rotulado como "Caminho Sinuoso". Este corredor corre horizontalmente para a direita antes de virar noventa graus para cima. Ele conecta à área final no canto superior direito, um espaço retangular rotulado como "Sala Lateral".
+Estendendo-se do lado superior direito da Sala de Meditação está um corredor rotulado como "Caminho Sinuoso". Este corredor corre horizontalmente para a direita antes de virar noventa graus para cima. Ele conecta à área final no canto superior direito, um espaço retangular rotulado como "Quarto Lateral".
 
 O mapa usa preenchimento bege para os cômodos e linhas marrons grossas para as paredes. Texto branco grande com contornos marrons identifica a imagem no canto inferior direito como "Mapa da Mansão Fey (Parcial)".

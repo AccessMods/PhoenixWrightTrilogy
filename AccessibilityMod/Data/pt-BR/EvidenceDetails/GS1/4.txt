@@ -1,7 +1,7 @@
-Um mapa esquemático delineia o terreno da Global Studios, identificando dois estúdios, um portão central e uma área de funcionários.
+Um mapa esquemático delineia o terreno dos Estúdios Mundial, identificando dois estúdios, um portão central e uma área de funcionários.
 
 A seção esquerda apresenta duas grandes salas quadradas conectadas por um corredor. "Estúdio 1" está localizado no canto superior esquerdo. O corredor se estende para a direita do Estúdio 1, com um ramal descendo para o "Estúdio 2" no centro inferior.
 
 À direita da junção para o Estúdio 2, uma barreira vertical rotulada "Portão" cruza o corredor, separando visualmente os dois estúdios da seção leste do mapa. Este portão está marcado com listras diagonais.
 
-No lado direito do portão, o corredor se bifurca. O caminho norte leva a uma saída rotulada "Portão Principal". O caminho sul leva a uma grande sala rotulada "Área de Funcionários". Dentro da Área de Funcionários, uma seção retangular escura ao longo da parede esquerda é identificada como o "Camarim".
+No lado direito do portão, o corredor se bifurca. O caminho norte leva a uma saída rotulada "Portão Principal". O caminho sul leva a uma grande sala rotulada "Área dos Funcionários". Dentro da Área dos Funcionários, uma seção retangular escura ao longo da parede esquerda é identificada como "Camarim".

@@ -1,13 +1,11 @@
-Resumo do Incidente
-
-Local: Cafeteria do Fórum Distrital
-Data/ Hora: 27 de agosto, 16:00
+Resumo do Incidente:
+Local: Cafeteria da Corte Municipal.
+Data/ Horário: 27 de agosto, 16:00.
 Vítima: Diego Armando (Idade: 28)
-Ocupação: Advogado
-Suspeita: Dahlia Hawthorne (Idade: 19)
+Profissão: Advogado.
+Suspeita: Dália Rosário (Idade: 19)
 ===
-Detalhes
-
-• Armando ingeriu veneno enquanto entrevistava a suspeita sobre outro caso.
-• Traços de veneno foram encontrados na xícara de café da vítima.
-• Nenhum veneno foi encontrado nas proximidades ou com a suspeita. Não está claro como o veneno entrou na xícara de café da vítima.
+Detalhes:
+Armando ingeriu veneno enquanto questionava a suspeita sobre outro caso.
+• Vestígios de veneno foram encontrados no copo de café da vítima.
+Nenhum veneno foi encontrado nas proximidades ou em posse da suspeita. Ainda não se sabe como o veneno foi colocado no copo de café da vítima.

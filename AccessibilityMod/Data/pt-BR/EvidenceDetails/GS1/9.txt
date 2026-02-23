@@ -1,15 +1,14 @@
 Resumo do Caso:
-28/12/2001
-Elevador, Tribunal Distrital.
-O ar no elevador estava com oxigênio reduzido no momento do incidente.
-Nenhuma pista encontrada na cena.
+Data: 28/12/2001.
+Local: Elevador, Corte Municipal.
+O elevador não continha oxigênio no momento do incidente. Nenhuma pista foi encontrada na cena.
 ===
 Dados da Vítima:
-Gregory Edgeworth (Idade 35)
-Advogado de defesa. Preso no elevador voltando de um julgamento perdido com o filho Miles (Idade 9).
-Uma bala encontrada no coração. A arma do crime foi disparada duas vezes.
+Gregory Edgeworth (Idade: 35)
+Advogado de defesa. Preso no elevador voltando de um julgamento perdido com o filho Miles Edgeworth, 9 anos.
+Um projétil encontrado no coração. A arma foi disparada duas vezes.
 ===
 Dados do Suspeito:
-Alan Guido (Idade 37)
-Oficial de justiça do tribunal, preso com os Edgeworths. Perda de memória devido à privação de oxigênio.
-Após sua prisão, a noiva Poli cometeu suicídio.
+Alan Guido (Idade: 37)
+Meirinho. Preso no elevador com os Edgeworth. Perda de memória devido à falta de oxigênio.
+Após a prisão, sua noiva, Poliana Louro, cometeu suicídio.
