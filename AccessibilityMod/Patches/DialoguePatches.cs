@@ -24,6 +24,9 @@ namespace AccessibilityMod.Patches
         internal static string _lastAnnouncedText = "";
         private static int _lastSpeakerId = -1;
 
+        // Cross-examination controls announcement tracking
+        private static int _crossExamSceneState = -1;
+
         // Regex for detecting button placeholders (multiple spaces or full-width spaces)
         private static readonly Regex SpacePlaceholderRegex = new Regex(
             @"[\u3000]+| {3,}",
@@ -114,6 +117,9 @@ namespace AccessibilityMod.Patches
         {
             try
             {
+                // Announce cross-examination controls on mode entry
+                CheckCrossExaminationEntry(in_type);
+
                 // Only output if the game is actually waiting for input, not during text display
                 if (IsDialogueGuideType(in_type) && IsWaitingForInput())
                 {
@@ -449,6 +455,46 @@ namespace AccessibilityMod.Patches
             return AccessibilityState.IsInCourtRecordMode()
                 || AccessibilityState.IsInEvidenceDetailsMode()
                 || AccessibilityState.IsIn3DEvidenceMode();
+        }
+
+        /// <summary>
+        /// Announce cross-examination controls once when entering testimony mode.
+        /// Tracks scene state to avoid re-announcing after pressing a statement.
+        /// </summary>
+        private static void CheckCrossExaminationEntry(guideCtrl.GuideType guideType)
+        {
+            try
+            {
+                int currentNo0 = -1;
+                try
+                {
+                    if (GSStatic.global_work_ != null)
+                        currentNo0 = (int)GSStatic.global_work_.r.no_0;
+                }
+                catch { }
+
+                // Reset tracking when leaving testimony mode
+                if (currentNo0 != 7)
+                {
+                    _crossExamSceneState = -1;
+                    return;
+                }
+
+                // Announce once per testimony session when QUESTIONING guide appears
+                if (
+                    guideType == guideCtrl.GuideType.QUESTIONING
+                    && _crossExamSceneState != 7
+                    && IsInCrossExaminationMode()
+                )
+                {
+                    _crossExamSceneState = 7;
+                    SpeechManager.Announce(
+                        L.Get("trial.cross_examination_hint"),
+                        GameTextType.Trial
+                    );
+                }
+            }
+            catch { }
         }
 
         /// <summary>

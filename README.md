@@ -49,15 +49,50 @@ You can install this in two ways, either by using the AccessMods Installer or by
 
 ## Keyboard Shortcuts
 
-| Key       | Context           | Action                                             |
-| --------- | ----------------- | -------------------------------------------------- |
-| **F5**    | Global            | Hot-reload config files                            |
-| **R**     | Global            | Repeat last output                                 |
-| **I**     | Global            | Announce current state/context                     |
-| **[ / ]** | Navigation modes  | Navigate items (hotspots, evidence, targets, etc.) |
-| **U**     | Investigation     | Jump to next unexamined hotspot                    |
-| **H**     | Trial | announce life gauge   |
-| **F1**    | Context-sensitive    | Announce                             help hints |
+### Mod Shortcuts
+
+| Key       | Context                           | Action                                    |
+| --------- | --------------------------------- | ----------------------------------------- |
+| **F5**    | Global                            | Hot-reload config files                   |
+| **R**     | Global (except vase/court record) | Repeat last output                        |
+| **I**     | Global                            | Announce current state/context            |
+| **H**     | Trial (not pointing)              | Announce life gauge                       |
+| **[ / ]** | Investigation                     | Navigate hotspots                         |
+| **U**     | Investigation                     | Jump to next unexamined hotspot           |
+| **F1**    | Investigation                     | List all hotspots                         |
+| **[ / ]** | Pointing mode                     | Navigate target areas                     |
+| **F1**    | Pointing mode                     | List all target areas                     |
+| **[ / ]** | Luminol mode                      | Navigate blood evidence                   |
+| **[ / ]** | 3D Evidence                       | Navigate examination points               |
+| **[ / ]** | Fingerprint mode                  | Navigate fingerprint locations            |
+| **F1**    | Fingerprint mode                  | Get hint for current phase                |
+| **[ / ]** | Video tape mode                   | Navigate to targets when paused           |
+| **F1**    | Video tape mode                   | Get hint                                  |
+| **F1**    | Vase puzzle                       | Get hint for current step                 |
+| **F1**    | Vase show (rotation)              | Get hint                                  |
+| **[ / ]** | Dying message                     | Navigate between dots                     |
+| **F1**    | Dying message                     | Get hint for spelling                     |
+| **F1**    | Bug sweeper                       | Announce state/hint                       |
+| **F1**    | Orchestra mode                    | Announce controls help                    |
+
+### Game Controls (Default Keyboard Bindings)
+
+These are the game's own controls that work alongside the mod:
+
+| Key              | Action                                            |
+| ---------------- | ------------------------------------------------- |
+| **Enter/Space**  | Confirm / Advance dialogue                        |
+| **Backspace**    | Cancel / Go back / Close                          |
+| **Arrow keys**   | Navigate menus / Move cursor                      |
+| **Q**            | Press witness statement (cross-examination)       |
+| **E**            | Present evidence / Confirm action                 |
+| **Tab**          | Open court record / Switch tabs                   |
+
+#### Cross-Examination
+
+During cross-examination, the witness gives testimony one statement at a time. Use **Left/Right** arrows to move between statements. Press **Q** to press (question) the current statement, or open the court record with **Tab**, navigate to the contradicting evidence, and press **E** to present it.
+
+> **Note:** Key bindings can be remapped in the game's Key Config options menu. The keys above are the defaults.
 
 ## Configuration
 

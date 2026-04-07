@@ -4,7 +4,6 @@ using AccessibilityMod.Core;
 using AccessibilityMod.Services;
 using HarmonyLib;
 using UnityAccessibilityLib;
-using UnityEngine.UI;
 using L = AccessibilityMod.Services.L;
 
 namespace AccessibilityMod.Patches
@@ -39,6 +38,13 @@ namespace AccessibilityMod.Patches
                 }
 
                 string message = L.Get("court_record.opened", tabName, itemCount);
+
+                // Add present hint during cross-examination or psyche-lock
+                if (IsInPresentableMode())
+                {
+                    message += " " + L.Get("court_record.present_hint");
+                }
+
                 SpeechManager.Announce(message, GameTextType.Menu);
 
                 // Reset tracking
@@ -331,6 +337,33 @@ namespace AccessibilityMod.Patches
                     $"Error in PlayPice patch: {ex.Message}"
                 );
             }
+        }
+
+        #endregion
+
+        #region Present Mode Detection
+
+        /// <summary>
+        /// Check if the player can present evidence from the court record.
+        /// This is true during cross-examination (trial) and Psyche-Lock sequences.
+        /// </summary>
+        private static bool IsInPresentableMode()
+        {
+            try
+            {
+                // Trial mode (questioning or cross-examination)
+                if (AccessibilityState.IsInTrialMode())
+                    return true;
+
+                // Psyche-Lock sequences
+                if (PsycheLockPatches.GetRemainingLocks() > 0)
+                    return true;
+            }
+            catch
+            {
+                // Safe to ignore - mode detection is best-effort
+            }
+            return false;
         }
 
         #endregion
