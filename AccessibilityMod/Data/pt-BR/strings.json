@@ -296,6 +296,7 @@
   "trial.danger": "PERIGO!",
   "trial.game_over": "Game Over!",
   "trial.health_percent": "Saúde: {0} por cento",
+  "trial.cross_examination_hint": "Contra-interrogatório. Pressione Q para pressionar declarações, abra o registro do tribunal e pressione E para apresentar evidências.",
 
   "_section_court_record": "=== Registro do Tribunal ===",
   "court_record.evidence": "Evidências",
@@ -309,6 +310,7 @@
   "court_record.page_x_of_y": "Página {0} de {1}.",
   "court_record.page_navigation_hint": "Pressione esquerda ou direita para páginas.",
   "court_record.close_hint": "Pressione Backspace para fechar.",
+  "court_record.present_hint": "Pressione E para apresentar a evidência selecionada.",
 
   "_section_psyche_lock": "=== Tranca Psíquica ===",
   "psyche_lock.total.one": "{0} Psicotrava",

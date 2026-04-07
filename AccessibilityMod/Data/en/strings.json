@@ -296,6 +296,7 @@
   "trial.danger": "DANGER!",
   "trial.game_over": "Game Over!",
   "trial.health_percent": "Health: {0} percent",
+  "trial.cross_examination_hint": "Cross-examination. Press Q to press statements, open court record and press E to present evidence.",
 
   "_section_court_record": "=== Court Record ===",
   "court_record.evidence": "Evidence",
@@ -309,6 +310,7 @@
   "court_record.page_x_of_y": "Page {0} of {1}.",
   "court_record.page_navigation_hint": "Press left or right for pages.",
   "court_record.close_hint": "Press Backspace to close.",
+  "court_record.present_hint": "Press E to present selected evidence.",
 
   "_section_psyche_lock": "=== Psyche-Lock ===",
   "psyche_lock.total.one": "{0} Psyche-Lock",

@@ -296,6 +296,7 @@
     "trial.danger": "危险！",
     "trial.game_over": "游戏结束。",
     "trial.health_percent": "血量: 百分之 {0} ",
+    "trial.cross_examination_hint": "交叉询问。按Q键威慑证词，打开法庭记录后按E键出示证物。",
 
   "_section_court_record": "=== Court Record ===",
     "court_record.evidence": "证物",
@@ -309,6 +310,7 @@
     "court_record.page_x_of_y": "第 {0} 页，共 {1} 页.",
     "court_record.page_navigation_hint": "按左右方向键可翻页。",
     "court_record.close_hint": "按退格键可关闭",
+    "court_record.present_hint": "按E键出示选中的证物。",
 
   "_section_psyche_lock": "=== Psyche-Lock ===",
   "psyche_lock.total.one": "发现{0} 个心灵枷锁",

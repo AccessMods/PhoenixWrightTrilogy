@@ -296,6 +296,7 @@
   "trial.danger": "위험!",
   "trial.game_over": "게임 오버!",
   "trial.health_percent": "체력: {0}퍼센트",
+  "trial.cross_examination_hint": "심문. Q를 눌러 추궁, 법정기록을 열고 E를 눌러 증거물 제시.",
 
   "_section_court_record": "=== Court Record ===",
   "court_record.evidence": "증거물",
@@ -309,6 +310,7 @@
   "court_record.page_x_of_y": "페이지 {0}/{1}.",
   "court_record.page_navigation_hint": "좌우로 페이지 이동.",
   "court_record.close_hint": "Backspace를 눌러 닫기.",
+  "court_record.present_hint": "E를 눌러 선택한 증거물 제시.",
 
   "_section_psyche_lock": "=== Psyche-Lock ===",
   "psyche_lock.total.one": "사이코 록 {0}개",
